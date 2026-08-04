@@ -77,9 +77,23 @@ class ScenarioPayload(BaseModel):
         return v
 
 
-class MCQBatch(BaseModel):
-    questions: list[dict]
+class ScenarioGradingPayload(BaseModel):
+    """Shape expected back from the LLM when grading a scenario answer against its rubric."""
 
+    covered: list[bool]
+    score: float
+    feedback: str
 
-class ScenarioBatch(BaseModel):
-    questions: list[dict]
+    @field_validator("score")
+    @classmethod
+    def score_in_range(cls, v: float) -> float:
+        if not (0 <= v <= 100):
+            raise ValueError("score must be between 0 and 100")
+        return v
+
+    @field_validator("feedback")
+    @classmethod
+    def not_blank(cls, v: str) -> str:
+        if not v or not v.strip():
+            raise ValueError("feedback must not be blank")
+        return v.strip()

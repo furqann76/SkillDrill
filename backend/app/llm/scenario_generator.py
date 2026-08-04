@@ -12,6 +12,7 @@ def generate_scenario(client: OllamaClient, topic: str, difficulty: str) -> Scen
         payload_cls=ScenarioPayload,
         topic=topic,
         difficulty=difficulty,
+        log_context=f"scenario topic={topic} difficulty={difficulty}",
     )
     return result  # type: ignore[return-value]
 

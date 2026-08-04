@@ -44,3 +44,25 @@ Rules:
 """
 
 SCENARIO_RETRY_SUFFIX = MCQ_RETRY_SUFFIX
+
+GRADING_PROMPT_TEMPLATE = """You are grading a job seeker's answer to a scenario-based interview practice question.
+
+Question:
+{question_text}
+
+Rubric (key points a strong answer should cover, in order):
+{rubric_text}
+
+The candidate's answer:
+{user_answer}
+
+Evaluate the answer against the rubric. Respond with ONLY a JSON object, no markdown, no commentary, matching this exact shape:
+
+{{
+  "covered": [<true or false for each rubric point above, in the same order, exactly {rubric_count} items>],
+  "score": <number 0-100, overall quality of the answer>,
+  "feedback": "<one or two sentences of constructive feedback>"
+}}
+"""
+
+GRADING_RETRY_SUFFIX = MCQ_RETRY_SUFFIX

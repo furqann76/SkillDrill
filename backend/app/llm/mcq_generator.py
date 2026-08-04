@@ -12,6 +12,7 @@ def generate_mcq(client: OllamaClient, topic: str, difficulty: str) -> MCQPayloa
         payload_cls=MCQPayload,
         topic=topic,
         difficulty=difficulty,
+        log_context=f"mcq topic={topic} difficulty={difficulty}",
     )
     return result  # type: ignore[return-value]
 

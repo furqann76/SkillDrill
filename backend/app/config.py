@@ -16,6 +16,10 @@ class Settings(BaseSettings):
     dedup_similarity_threshold: float = 0.9
 
     app_pin: str = "changeme"
+    session_secret: str = "changeme-session-secret"
+
+    scenario_pass_threshold: float = 70.0
+    cors_origin: str = "http://localhost:5173"
 
 
 settings = Settings()

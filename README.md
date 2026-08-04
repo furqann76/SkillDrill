@@ -29,10 +29,9 @@ See [`SkillDrill-Spec.md`](./SkillDrill-Spec.md) for the full functional spec.
 ## Setup
 
 ```bash
-cp .env.example .env   # adjust model names / DB path / APP_PIN if needed
-
 # Backend
 cd backend
+cp .env.example .env   # adjust APP_PIN, SESSION_SECRET, model names etc.
 python3 -m venv .venv
 .venv/bin/pip install -e ".[dev]"
 
@@ -43,20 +42,35 @@ npm install
 
 ## Running
 
-**Phase 1 (current)** — no server yet, just the generation pipeline. Generate and save a batch
-of MCQs for one topic/difficulty directly:
+**1. Generate some questions first** — the quiz UI only reads from the bank, it never calls the
+LLM live, so there needs to be something in the bank before you can take a quiz:
 
 ```bash
 cd backend
-.venv/bin/python -m app.generate_cli --topic Python --difficulty basic --count 10
+.venv/bin/python -m app.generate_cli --topic Python --difficulty basic --count 20
 ```
 
-This writes validated questions straight into the SQLite bank at `backend/data/skilldrill.db`.
-Anything that fails JSON/schema validation after a bounded number of retries is logged and
-skipped — never saved malformed.
+This validates, deduplicates (via embedding cosine similarity), and saves questions to
+`backend/data/skilldrill.db`. Anything that fails JSON/schema validation after a bounded number
+of retries, or is a near-duplicate of an existing question, is logged and skipped — never saved
+malformed or repeated. Use `--type scenario` for scenario questions.
 
-Once the FastAPI app and React frontend are wired up (Phase 3), full run instructions will be
-added here.
+**2. Start the backend API:**
+
+```bash
+cd backend
+.venv/bin/uvicorn app.main:app --reload --port 8000
+```
+
+**3. Start the frontend:**
+
+```bash
+cd frontend
+npm run dev
+```
+
+Open the URL Vite prints (typically `http://localhost:5173`). Log in with `APP_PIN` from your
+`.env`, create a profile, pick a topic/difficulty, and take the quiz.
 
 ## Development
 
