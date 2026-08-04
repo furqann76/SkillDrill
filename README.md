@@ -55,18 +55,18 @@ This validates, deduplicates (via embedding cosine similarity), and saves questi
 of retries, or is a near-duplicate of an existing question, is logged and skipped — never saved
 malformed or repeated. Use `--type scenario` for scenario questions.
 
-**2. Start the backend API:**
+**2. Start the backend and frontend together:**
 
 ```bash
-cd backend
-.venv/bin/uvicorn app.main:app --reload --port 8000
+./dev.sh
 ```
 
-**3. Start the frontend:**
+This runs the FastAPI backend (`:8000`) and the Vite dev server (`:5173`) side by side and stops
+both on Ctrl+C. To run them separately instead:
 
 ```bash
-cd frontend
-npm run dev
+cd backend  && .venv/bin/uvicorn app.main:app --reload --port 8000
+cd frontend && npm run dev
 ```
 
 Open the URL Vite prints (typically `http://localhost:5173`). Log in with `APP_PIN` from your
