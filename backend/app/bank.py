@@ -14,7 +14,19 @@ def get_or_create_topic(session: Session, name: str) -> Topic:
     return topic
 
 
-def save_mcq(session: Session, topic_name: str, payload: MCQPayload) -> Question:
+def get_topic_embeddings(session: Session, topic_id: int) -> list[list[float]]:
+    """All stored embeddings for a topic's existing questions, for dedup comparison."""
+    rows = session.scalars(
+        select(Question.embedding).where(
+            Question.topic_id == topic_id, Question.embedding.is_not(None)
+        )
+    ).all()
+    return list(rows)
+
+
+def save_mcq(
+    session: Session, topic_name: str, payload: MCQPayload, embedding: list[float] | None = None
+) -> Question:
     topic = get_or_create_topic(session, topic_name)
     question = Question(
         topic_id=topic.id,
@@ -24,13 +36,19 @@ def save_mcq(session: Session, topic_name: str, payload: MCQPayload) -> Question
         options=payload.options,
         correct_index=payload.correct_index,
         explanation=payload.explanation,
+        embedding=embedding,
     )
     session.add(question)
     session.commit()
     return question
 
 
-def save_scenario(session: Session, topic_name: str, payload: ScenarioPayload) -> Question:
+def save_scenario(
+    session: Session,
+    topic_name: str,
+    payload: ScenarioPayload,
+    embedding: list[float] | None = None,
+) -> Question:
     topic = get_or_create_topic(session, topic_name)
     question = Question(
         topic_id=topic.id,
@@ -39,6 +57,7 @@ def save_scenario(session: Session, topic_name: str, payload: ScenarioPayload) -
         question_text=payload.question_text,
         model_answer=payload.model_answer,
         rubric=payload.rubric,
+        embedding=embedding,
     )
     session.add(question)
     session.commit()
