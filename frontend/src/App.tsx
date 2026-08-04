@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 import { api } from './api'
+import { AdminTopics } from './components/AdminTopics'
+import { Dashboard } from './components/Dashboard'
 import { Login } from './components/Login'
 import { ProfileSelect } from './components/ProfileSelect'
 import { QuizRunner, type QuestionResult } from './components/QuizRunner'
@@ -8,7 +10,7 @@ import { QuizSetup } from './components/QuizSetup'
 import { Summary } from './components/Summary'
 import type { Profile, QuestionOut } from './types'
 
-type Screen = 'checking' | 'login' | 'profile' | 'setup' | 'quiz' | 'summary'
+type Screen = 'checking' | 'login' | 'profile' | 'setup' | 'quiz' | 'summary' | 'dashboard' | 'admin'
 
 function App() {
   const [screen, setScreen] = useState<Screen>('checking')
@@ -54,6 +56,8 @@ function App() {
             setQuestions(qs)
             setScreen('quiz')
           }}
+          onViewDashboard={() => setScreen('dashboard')}
+          onManageTopics={() => setScreen('admin')}
         />
       )}
 
@@ -69,6 +73,12 @@ function App() {
       )}
 
       {screen === 'summary' && <Summary results={results} onRestart={() => setScreen('setup')} />}
+
+      {screen === 'dashboard' && profile && (
+        <Dashboard profile={profile} onBack={() => setScreen('setup')} />
+      )}
+
+      {screen === 'admin' && <AdminTopics onBack={() => setScreen('setup')} />}
     </>
   )
 }

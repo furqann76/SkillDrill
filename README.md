@@ -70,7 +70,15 @@ npm run dev
 ```
 
 Open the URL Vite prints (typically `http://localhost:5173`). Log in with `APP_PIN` from your
-`.env`, create a profile, pick a topic/difficulty, and take the quiz.
+`.env`, create a profile, pick a topic/difficulty, and take the quiz. From the quiz setup screen
+you can also open **View progress** (per-topic accuracy, weak-topic highlighting) and
+**Manage topics** (add topics, activate/deactivate — an inactive topic is hidden from quiz setup).
+
+**Background bank top-up**: on startup, the backend schedules a recurring job (every
+`TOP_UP_INTERVAL_MINUTES`, default 30) that checks every active topic × difficulty × question
+type and generates more questions — up to `GENERATION_BATCH_SIZE` — for any combo that's fallen
+below `GENERATION_LOW_WATERMARK`. It runs on a background thread, never in the request path, so
+it never blocks the quiz UI. Set `TOP_UP_ENABLED=false` in `.env` to disable it.
 
 ## Development
 

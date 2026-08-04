@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { api } from '../api'
 import type { GradeMCQResponse, GradeScenarioResponse, Profile, QuestionOut } from '../types'
+import { FormattedText } from './FormattedText'
 
 export interface QuestionResult {
   question: QuestionOut
@@ -65,7 +66,9 @@ export function QuizRunner({
       <p className="progress">
         Question {index + 1} of {questions.length}
       </p>
-      <h2>{question.question_text}</h2>
+      <h2>
+        <FormattedText text={question.question_text} />
+      </h2>
 
       {!pending && question.type === 'mcq' && (
         <div className="stack">

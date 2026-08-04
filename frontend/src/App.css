@@ -5,6 +5,21 @@
   text-align: left;
 }
 
+.nav-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+button.link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--accent);
+  text-decoration: underline;
+  font-size: 14px;
+}
+
 .stack {
   display: flex;
   flex-direction: column;
@@ -140,4 +155,120 @@ button.secondary {
 .error {
   color: #dc2626;
   margin-top: 12px;
+}
+
+.weak-banner {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--status-critical);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--status-critical) 12%, transparent);
+  font-size: 14px;
+}
+
+.bar-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bar-row-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.bar-label {
+  color: var(--text-h);
+  font-weight: 500;
+}
+
+.bar-value {
+  color: var(--text-h);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.bar-track {
+  height: 20px;
+  border-radius: 4px;
+  background: var(--bar-track);
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 0 4px 4px 0;
+  transition: width 0.2s ease;
+}
+
+.bar-meta {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.stats-table {
+  margin-top: 28px;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.stats-table th,
+.stats-table td {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.stats-table th {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.stats-table td:not(:first-child),
+.stats-table th:not(:first-child) {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.topic-admin-list {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.topic-admin-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+.plain-text {
+  white-space: pre-wrap;
+}
+
+.code-block {
+  display: block;
+  margin: 10px 0;
+  padding: 12px 14px;
+  background: var(--code-bg);
+  border-radius: 6px;
+  overflow-x: auto;
+  font-size: 14px;
+}
+
+.code-block code {
+  font-family: var(--mono);
+  white-space: pre;
 }

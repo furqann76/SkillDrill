@@ -21,5 +21,11 @@ class Settings(BaseSettings):
     scenario_pass_threshold: float = 70.0
     cors_origin: str = "http://localhost:5173"
 
+    weak_topic_threshold: float = 70.0
+
+    top_up_enabled: bool = True
+    top_up_interval_minutes: int = 30
+    top_up_initial_delay_seconds: int = 15
+
 
 settings = Settings()

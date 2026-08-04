@@ -5,9 +5,13 @@ import type { Profile, QuestionOut, Topic } from '../types'
 export function QuizSetup({
   profile,
   onStart,
+  onViewDashboard,
+  onManageTopics,
 }: {
   profile: Profile
   onStart: (questions: QuestionOut[]) => void
+  onViewDashboard: () => void
+  onManageTopics: () => void
 }) {
   const [topics, setTopics] = useState<Topic[]>([])
   const [topic, setTopic] = useState('')
@@ -46,6 +50,14 @@ export function QuizSetup({
 
   return (
     <div className="screen">
+      <div className="nav-row">
+        <button className="link" onClick={onViewDashboard}>
+          View progress
+        </button>
+        <button className="link" onClick={onManageTopics}>
+          Manage topics
+        </button>
+      </div>
       <h1>Start a quiz</h1>
       <p>Practicing as {profile.name}</p>
       <form onSubmit={handleSubmit} className="stack">

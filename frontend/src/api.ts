@@ -1,4 +1,5 @@
 import type {
+  AnalyticsResponse,
   GradeMCQResponse,
   GradeScenarioResponse,
   Profile,
@@ -34,7 +35,17 @@ export const api = {
   createProfile: (name: string) =>
     request<Profile>('/profiles', { method: 'POST', body: JSON.stringify({ name }) }),
 
-  listTopics: () => request<Topic[]>('/topics'),
+  listTopics: (includeInactive = false) =>
+    request<Topic[]>(`/topics${includeInactive ? '?include_inactive=true' : ''}`),
+
+  createTopic: (name: string, display_name?: string) =>
+    request<Topic>('/topics', { method: 'POST', body: JSON.stringify({ name, display_name }) }),
+
+  setTopicActive: (topicId: number, is_active: boolean) =>
+    request<Topic>(`/topics/${topicId}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ is_active }),
+    }),
 
   startQuiz: (profile_id: number, topic: string, difficulty: string, count: number) =>
     request<QuizStartResponse>('/quiz/start', {
@@ -53,4 +64,7 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ profile_id, question_id, answer_text }),
     }),
+
+  getAnalytics: (profile_id: number) =>
+    request<AnalyticsResponse>(`/analytics/${profile_id}`),
 }
