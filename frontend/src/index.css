@@ -22,12 +22,13 @@
 
   /* The hero/celebration surfaces (login, summary) are always-dark and
      gradient-branded, independent of light/dark mode -- a fixed brand
-     moment rather than a themed content screen. */
-  --hero-bg: radial-gradient(circle at 15% 10%, rgba(236, 72, 153, 0.35), transparent 55%),
-    radial-gradient(circle at 85% 90%, rgba(124, 58, 237, 0.35), transparent 55%),
-    linear-gradient(160deg, #120a24 0%, #1b0b2e 55%, #240f30 100%);
+     moment rather than a themed content screen. Indigo -> teal base, kept
+     cool so the pink-purple buttons/score text read as the one warm accent. */
+  --hero-bg: radial-gradient(circle at 15% 10%, rgba(30, 58, 95, 0.5), transparent 55%),
+    radial-gradient(circle at 85% 90%, rgba(13, 79, 74, 0.5), transparent 55%),
+    linear-gradient(160deg, #0f1c3f 0%, #1e3a5f 45%, #0d4f4a 100%);
   --hero-text: #f5f3ff;
-  --hero-text-muted: #c4b5fd;
+  --hero-text-muted: #a8bfd6;
   --hero-border: rgba(255, 255, 255, 0.16);
   --hero-field-bg: rgba(255, 255, 255, 0.07);
 
