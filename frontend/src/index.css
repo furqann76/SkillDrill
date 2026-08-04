@@ -5,11 +5,14 @@
   --text-muted: #8a8a8a;
 
   --border: rgba(10, 10, 10, 0.12);
-  --border-strong: #0a0a0a;
+  --border-strong: rgba(10, 10, 10, 0.14);
 
-  --accent: #4338ca;
-  --accent-hover: #362da3;
+  --accent-1: #ec4899;
+  --accent-2: #7c3aed;
+  --accent: #7c3aed;
+  --accent-hover: #6d28d9;
   --accent-contrast: #ffffff;
+  --gradient: linear-gradient(135deg, var(--accent-1) 0%, var(--accent-2) 100%);
 
   --code-bg: #f5f5f5;
 
@@ -17,11 +20,22 @@
   --status-critical: #d03b3b;
   --bar-track: #e5e5e5;
 
+  /* The hero/celebration surfaces (login, summary) are always-dark and
+     gradient-branded, independent of light/dark mode -- a fixed brand
+     moment rather than a themed content screen. */
+  --hero-bg: radial-gradient(circle at 15% 10%, rgba(236, 72, 153, 0.35), transparent 55%),
+    radial-gradient(circle at 85% 90%, rgba(124, 58, 237, 0.35), transparent 55%),
+    linear-gradient(160deg, #120a24 0%, #1b0b2e 55%, #240f30 100%);
+  --hero-text: #f5f3ff;
+  --hero-text-muted: #c4b5fd;
+  --hero-border: rgba(255, 255, 255, 0.16);
+  --hero-field-bg: rgba(255, 255, 255, 0.07);
+
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
   --mono: ui-monospace, 'JetBrains Mono', Consolas, monospace;
 
-  font: 18px/145% var(--sans);
+  font: 18px/1.45 var(--sans);
   letter-spacing: 0.18px;
   color-scheme: light dark;
   color: var(--text);
@@ -43,12 +57,14 @@
     --text-h: #fafafa;
     --text-muted: #737373;
 
-    --border: rgba(255, 255, 255, 0.16);
-    --border-strong: #fafafa;
+    --border: rgba(255, 255, 255, 0.14);
+    --border-strong: rgba(255, 255, 255, 0.18);
 
-    --accent: #818cf8;
-    --accent-hover: #9ca3f9;
-    --accent-contrast: #0a0a0a;
+    --accent-1: #f472b6;
+    --accent-2: #a78bfa;
+    --accent: #a78bfa;
+    --accent-hover: #b9a3fc;
+    --accent-contrast: #16091f;
 
     --code-bg: #171717;
 
@@ -61,7 +77,6 @@
   max-width: 100%;
   margin: 0 auto;
   text-align: center;
-  border-inline: 1px solid var(--border);
   min-height: 100svh;
   display: flex;
   flex-direction: column;
@@ -80,8 +95,8 @@ h2 {
 }
 
 h1 {
-  font-size: 52px;
-  letter-spacing: -1.8px;
+  font-size: 48px;
+  letter-spacing: -1.6px;
   margin: 32px 0;
   @media (max-width: 1024px) {
     font-size: 34px;
@@ -105,7 +120,7 @@ p {
 code {
   font-family: var(--mono);
   display: inline-flex;
-  border-radius: 3px;
+  border-radius: 4px;
   color: var(--text-h);
   font-size: 15px;
   line-height: 135%;

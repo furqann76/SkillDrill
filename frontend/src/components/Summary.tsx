@@ -1,5 +1,12 @@
 import type { QuestionResult } from './QuizRunner'
 
+function celebrationMessage(pct: number): string {
+  if (pct === 100) return "Perfect score — you're crushing it."
+  if (pct >= 80) return 'Great run — almost there.'
+  if (pct >= 50) return 'Solid effort — a bit more practice and you’ve got it.'
+  return "Rough one — let's drill this topic again."
+}
+
 export function Summary({
   results,
   onRestart,
@@ -10,13 +17,15 @@ export function Summary({
   const correct = results.filter(
     (r) => r.mcqResult?.is_correct || r.scenarioResult?.is_correct,
   ).length
+  const pct = results.length > 0 ? Math.round((correct / results.length) * 100) : 0
 
   return (
-    <div className="screen">
+    <div className="hero-screen">
       <h1>Summary</h1>
-      <p className="score-line">
-        {correct} / {results.length} correct
+      <p className="score-hero">
+        {correct}/{results.length}
       </p>
+      <p className="score-hero-sub">{celebrationMessage(pct)}</p>
       <ul className="summary-list">
         {results.map((r, i) => (
           <li key={i} className={r.mcqResult?.is_correct || r.scenarioResult?.is_correct ? 'covered' : 'missed'}>

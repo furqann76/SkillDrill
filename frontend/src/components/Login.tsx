@@ -21,7 +21,7 @@ export function Login({ onSuccess }: { onSuccess: () => void }) {
   }
 
   return (
-    <div className="screen">
+    <div className="hero-screen">
       <h1>SkillDrill</h1>
       <p>Enter your PIN to continue.</p>
       <form onSubmit={handleSubmit} className="stack">
