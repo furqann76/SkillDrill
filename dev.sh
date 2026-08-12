@@ -46,12 +46,13 @@ cleanup() {
 }
 trap cleanup EXIT INT TERM
 
-(cd "$ROOT_DIR/backend" && .venv/bin/uvicorn app.main:app --reload --port "$BACKEND_PORT") &
+(cd "$ROOT_DIR/backend" && .venv/bin/python manage.py runserver "$BACKEND_PORT") &
 BACKEND_PID=$!
 
 (cd "$ROOT_DIR/frontend" && npm run dev -- --port "$FRONTEND_PORT" --strictPort) &
 FRONTEND_PID=$!
 
 echo "Backend:  http://localhost:$BACKEND_PORT"
+echo "Admin:    http://localhost:$BACKEND_PORT/admin"
 echo "Frontend: http://localhost:$FRONTEND_PORT"
 wait

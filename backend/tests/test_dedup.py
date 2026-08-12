@@ -1,6 +1,6 @@
 import pytest
 
-from app.dedup import cosine_similarity, is_near_duplicate
+from quizbank.dedup import cosine_similarity, is_near_duplicate
 
 
 def test_identical_vectors_have_similarity_one():

@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from app.schemas import MCQPayload, ScenarioPayload
+from llm.schemas import MCQPayload, ScenarioPayload
 
 VALID_MCQ = {
     "question_text": "Which keyword defines a function in Python?",

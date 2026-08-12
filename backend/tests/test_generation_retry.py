@@ -1,5 +1,5 @@
-from app.llm.generation import generate_validated
-from app.schemas import MCQPayload
+from llm.generation import generate_validated
+from llm.schemas import MCQPayload
 
 VALID_MCQ_JSON = {
     "question_text": "Which keyword defines a function in Python?",

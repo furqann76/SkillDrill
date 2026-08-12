@@ -1,9 +1,8 @@
 import pytest
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 
-from app.models import Base
-from app.pipeline import generate_and_save_mcq_batch
+from quizbank.pipeline import generate_and_save_mcq_batch
+
+pytestmark = pytest.mark.django_db
 
 VALID_MCQ_JSON = {
     "question_text": "Which keyword defines a function in Python?",
@@ -20,16 +19,6 @@ DIFFERENT_MCQ_JSON = {
     "explanation": "A queue is First-In-First-Out.",
     "difficulty": "basic",
 }
-
-
-@pytest.fixture
-def session():
-    engine = create_engine("sqlite:///:memory:")
-    Base.metadata.create_all(engine)
-    Session = sessionmaker(bind=engine)
-    s = Session()
-    yield s
-    s.close()
 
 
 class FakeClient:
@@ -52,38 +41,38 @@ class FakeClient:
         return embedding
 
 
-def test_duplicate_within_batch_is_discarded(session):
+def test_duplicate_within_batch_is_discarded():
     # Same question generated twice with near-identical embeddings -> second is a duplicate.
     client = FakeClient(
         generations=[VALID_MCQ_JSON, VALID_MCQ_JSON],
         embeddings=[[1.0, 0.0], [0.99, 0.05]],
     )
-    stats = generate_and_save_mcq_batch(client, session, "Python", "basic", count=2)
+    stats = generate_and_save_mcq_batch(client, "Python", "basic", count=2)
 
     assert stats.saved == 1
     assert stats.skipped_duplicate == 1
     assert stats.skipped_invalid == 0
 
 
-def test_distinct_questions_both_saved(session):
+def test_distinct_questions_both_saved():
     client = FakeClient(
         generations=[VALID_MCQ_JSON, DIFFERENT_MCQ_JSON],
         embeddings=[[1.0, 0.0], [0.0, 1.0]],
     )
-    stats = generate_and_save_mcq_batch(client, session, "Python", "basic", count=2)
+    stats = generate_and_save_mcq_batch(client, "Python", "basic", count=2)
 
     assert stats.saved == 2
     assert stats.skipped_duplicate == 0
 
 
-def test_dedups_against_previously_saved_questions_not_just_current_batch(session):
+def test_dedups_against_previously_saved_questions_not_just_current_batch():
     # First batch saves one question.
     client1 = FakeClient(generations=[VALID_MCQ_JSON], embeddings=[[1.0, 0.0]])
-    generate_and_save_mcq_batch(client1, session, "Python", "basic", count=1)
+    generate_and_save_mcq_batch(client1, "Python", "basic", count=1)
 
     # Second, separate batch call generates a near-duplicate of what's already in the bank.
     client2 = FakeClient(generations=[VALID_MCQ_JSON], embeddings=[[0.99, 0.05]])
-    stats2 = generate_and_save_mcq_batch(client2, session, "Python", "basic", count=1)
+    stats2 = generate_and_save_mcq_batch(client2, "Python", "basic", count=1)
 
     assert stats2.saved == 0
     assert stats2.skipped_duplicate == 1
