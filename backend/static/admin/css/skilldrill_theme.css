@@ -1,0 +1,181 @@
+/* SkillDrill admin theme -- overrides Django admin's CSS custom properties
+   (defined in admin/css/base.css and dark_mode.css) to match the frontend's
+   pink-purple gradient identity. Loaded after Django's own stylesheets, so
+   same-specificity rules here win by source order; selectors mirror Django's
+   exactly (html[data-theme=...] and the prefers-color-scheme media query) so
+   overrides apply consistently regardless of the viewer's theme toggle state. */
+
+html[data-theme='light'],
+:root {
+  --primary: #7c3aed;
+  --secondary: #ec4899;
+  --accent: #ec4899;
+  --primary-fg: #ffffff;
+
+  --body-fg: #0a0a0a;
+  --body-bg: #ffffff;
+  --body-quiet-color: #525252;
+  --body-medium-color: #333333;
+  --body-loud-color: #0a0a0a;
+
+  --header-color: #ffffff;
+  --header-bg: #7c3aed;
+  --header-link-color: #ffffff;
+
+  --breadcrumbs-fg: #f3e8ff;
+  --breadcrumbs-link-fg: #ffffff;
+  --breadcrumbs-bg: #7c3aed;
+
+  --link-fg: #7c3aed;
+  --link-hover-color: #ec4899;
+  --link-selected-fg: #ec4899;
+
+  --hairline-color: #eeeeee;
+  --border-color: rgba(10, 10, 10, 0.14);
+
+  --error-fg: #d03b3b;
+
+  --message-success-bg: #dcfce7;
+  --message-warning-bg: #fef3c7;
+  --message-error-bg: #fee2e2;
+
+  --darkened-bg: #faf5ff;
+  --selected-bg: #f3e8ff;
+  --selected-row: #fce7f3;
+
+  --button-fg: #ffffff;
+  --button-bg: #7c3aed;
+  --button-hover-bg: #6d28d9;
+  --default-button-bg: #7c3aed;
+  --default-button-hover-bg: #6d28d9;
+  --close-button-bg: #8a8a8a;
+  --close-button-hover-bg: #666666;
+  --delete-button-bg: #d03b3b;
+  --delete-button-hover-bg: #b93030;
+
+  --object-tools-bg: #7c3aed;
+  --object-tools-hover-bg: #6d28d9;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary: #a78bfa;
+    --primary-fg: #16091f;
+
+    --body-fg: #fafafa;
+    --body-bg: #0a0a0a;
+    --body-quiet-color: #a3a3a3;
+    --body-medium-color: #d4d4d4;
+    --body-loud-color: #ffffff;
+
+    --breadcrumbs-link-fg: #f5d0e8;
+    --breadcrumbs-bg: #a78bfa;
+
+    --link-fg: #a78bfa;
+    --link-hover-color: #f472b6;
+    --link-selected-fg: #f472b6;
+
+    --hairline-color: rgba(255, 255, 255, 0.14);
+    --border-color: rgba(255, 255, 255, 0.18);
+
+    --error-fg: #e66767;
+
+    --darkened-bg: #151213;
+    --selected-bg: #1e1625;
+    --selected-row: #2a0e33;
+
+    --close-button-bg: #333333;
+    --close-button-hover-bg: #666666;
+  }
+}
+
+html[data-theme='dark'] {
+  --primary: #a78bfa;
+  --primary-fg: #16091f;
+
+  --body-fg: #fafafa;
+  --body-bg: #0a0a0a;
+  --body-quiet-color: #a3a3a3;
+  --body-medium-color: #d4d4d4;
+  --body-loud-color: #ffffff;
+
+  --breadcrumbs-link-fg: #f5d0e8;
+  --breadcrumbs-bg: #a78bfa;
+
+  --link-fg: #a78bfa;
+  --link-hover-color: #f472b6;
+  --link-selected-fg: #f472b6;
+
+  --hairline-color: rgba(255, 255, 255, 0.14);
+  --border-color: rgba(255, 255, 255, 0.18);
+
+  --error-fg: #e66767;
+
+  --darkened-bg: #151213;
+  --selected-bg: #1e1625;
+  --selected-row: #2a0e33;
+
+  --close-button-bg: #333333;
+  --close-button-hover-bg: #666666;
+}
+
+/* The header banner is a fixed brand moment (like the frontend's login/summary
+   hero) -- always the pink-purple gradient regardless of light/dark mode. */
+#header {
+  background: var(--header-bg);
+  background-image: linear-gradient(135deg, #ec4899 0%, #7c3aed 100%);
+}
+
+#site-name,
+#site-name a:link,
+#site-name a:visited {
+  color: #ffffff;
+}
+
+/* Pill-shaped gradient buttons, matching the frontend's primary CTA. */
+.button,
+input[type='submit'],
+input[type='button'],
+.submit-row input,
+a.button {
+  background-image: linear-gradient(135deg, #ec4899 0%, #7c3aed 100%);
+  border: none;
+  border-radius: 999px;
+  padding-inline: 16px;
+}
+
+.button:active,
+input[type='submit']:active,
+.submit-row input:active,
+.button.default:active,
+input[type='submit'].default:active {
+  background-image: linear-gradient(135deg, #db2777 0%, #6d28d9 100%);
+}
+
+.button.default,
+input[type='submit'].default {
+  background-image: linear-gradient(135deg, #ec4899 0%, #7c3aed 100%);
+  font-weight: 600;
+}
+
+.delete-confirmation form input[type='submit'].default {
+  background-image: none;
+  background: var(--delete-button-bg);
+}
+
+/* Rounded cards, matching the frontend's rounded-corner surfaces. */
+.module,
+.module h2,
+.module caption {
+  border-radius: 10px;
+}
+
+.module {
+  overflow: hidden;
+}
+
+/* Object-tools ("ADD X" pill in the top-right) picks up the gradient too. */
+.object-tools a.addlink {
+  background-image: linear-gradient(135deg, #ec4899 0%, #7c3aed 100%);
+  border-radius: 999px;
+}
