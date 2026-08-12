@@ -15,6 +15,7 @@
   --gradient: linear-gradient(135deg, var(--accent-1) 0%, var(--accent-2) 100%);
 
   --code-bg: #f5f5f5;
+  --field-bg: #fafafa;
 
   --status-good: #0ca30c;
   --status-critical: #d03b3b;
@@ -22,13 +23,15 @@
 
   /* The hero/celebration surfaces (login, summary) are always-dark and
      gradient-branded, independent of light/dark mode -- a fixed brand
-     moment rather than a themed content screen. Indigo -> teal base, kept
-     cool so the pink-purple buttons/score text read as the one warm accent. */
-  --hero-bg: radial-gradient(circle at 15% 10%, rgba(30, 58, 95, 0.5), transparent 55%),
-    radial-gradient(circle at 85% 90%, rgba(13, 79, 74, 0.5), transparent 55%),
-    linear-gradient(160deg, #0f1c3f 0%, #1e3a5f 45%, #0d4f4a 100%);
+     moment rather than a themed content screen. Same red/black family as
+     the page canvas (see dark-mode `background` below) so the card reads
+     as part of one design instead of two competing gradients, with a
+     violet glow tying it to the pink-purple buttons/score text. */
+  --hero-bg: radial-gradient(circle at 15% 10%, rgba(185, 28, 28, 0.32), transparent 55%),
+    radial-gradient(circle at 85% 90%, rgba(124, 58, 237, 0.28), transparent 55%),
+    linear-gradient(160deg, #14060a 0%, #2a0a12 50%, #1c0508 100%);
   --hero-text: #f5f3ff;
-  --hero-text-muted: #a8bfd6;
+  --hero-text-muted: #d9b9c4;
   --hero-border: rgba(255, 255, 255, 0.16);
   --hero-field-bg: rgba(255, 255, 255, 0.07);
 
@@ -68,8 +71,15 @@
     --accent-contrast: #16091f;
 
     --code-bg: #171717;
+    --field-bg: #151213;
 
     --bar-track: #262626;
+
+    /* Page canvas only -- --bg itself stays a solid near-black so inputs,
+       code blocks, and table surfaces keep clean contrast against it. */
+    background: radial-gradient(circle at 20% 0%, rgba(185, 28, 28, 0.22), transparent 55%),
+      linear-gradient(165deg, #050505 0%, #1a0508 55%, #2b0a0a 100%);
+    background-attachment: fixed;
   }
 }
 

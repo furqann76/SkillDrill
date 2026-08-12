@@ -36,6 +36,7 @@ export function ProfileSelect({
           {profiles.map((p) => (
             <li key={p.id}>
               <button className="secondary" onClick={() => onSelect(p)}>
+                <span className="profile-avatar">{p.name.charAt(0)}</span>
                 {p.name}
               </button>
             </li>
