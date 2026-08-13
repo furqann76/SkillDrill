@@ -120,10 +120,13 @@ html[data-theme='dark'] {
 }
 
 /* The header banner is a fixed brand moment (like the frontend's login/summary
-   hero) -- always the pink-purple gradient regardless of light/dark mode. */
+   hero) -- always this deep red-black gradient regardless of light/dark mode,
+   the same one used behind the frontend's hero screens. */
 #header {
   background: var(--header-bg);
-  background-image: linear-gradient(135deg, #ec4899 0%, #7c3aed 100%);
+  background-image:
+    radial-gradient(circle at 15% 0%, rgba(185, 28, 28, 0.35), transparent 60%),
+    linear-gradient(120deg, #14060a 0%, #2a0a12 55%, #1c0508 100%);
 }
 
 #site-name,
