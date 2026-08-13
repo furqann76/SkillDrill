@@ -1,12 +1,17 @@
 import { useState } from 'react'
 import { api } from '../api'
 import type { GradeMCQResponse, GradeScenarioResponse, Profile, QuestionOut } from '../types'
+import { DmHeader } from './DmHeader'
 import { FormattedText } from './FormattedText'
 
 export interface QuestionResult {
   question: QuestionOut
   mcqResult?: GradeMCQResponse
   scenarioResult?: GradeScenarioResponse
+}
+
+function pad(n: number): string {
+  return String(n).padStart(2, '0')
 }
 
 export function QuizRunner({
@@ -62,82 +67,118 @@ export function QuizRunner({
   }
 
   return (
-    <div className="screen">
-      <p className="progress">
-        Question {index + 1} of {questions.length}
-      </p>
-      <h2>
-        <FormattedText text={question.question_text} />
-      </h2>
-
-      {!pending && question.type === 'mcq' && (
-        <div className="stack">
-          {question.options?.map((opt, i) => (
-            <label key={i} className="option">
-              <input
-                type="radio"
-                name="option"
-                checked={selectedOption === i}
-                onChange={() => setSelectedOption(i)}
-              />
-              {opt}
-            </label>
+    <div className="dm-app">
+      <DmHeader
+        right={
+          <div className="dm-idx">
+            Q {pad(index + 1)} / {pad(questions.length)}
+          </div>
+        }
+      />
+      <div className="dm-body">
+        <div className="dm-ticks">
+          {questions.map((_, i) => (
+            <div key={i} className={i === index ? 'dm-tick on' : i < index ? 'dm-tick done' : 'dm-tick'} />
           ))}
-          <button onClick={submitAnswer} disabled={busy || selectedOption === null}>
-            Submit
-          </button>
         </div>
-      )}
 
-      {!pending && question.type === 'scenario' && (
-        <div className="stack">
-          <textarea
-            value={scenarioAnswer}
-            onChange={(e) => setScenarioAnswer(e.target.value)}
-            rows={6}
-            placeholder="Type your answer…"
-          />
-          <button onClick={submitAnswer} disabled={busy || !scenarioAnswer.trim()}>
-            {busy ? 'Grading…' : 'Submit'}
-          </button>
-        </div>
-      )}
-
-      {pending?.mcqResult && (
-        <div className="result">
-          <p className={pending.mcqResult.is_correct ? 'correct' : 'incorrect'}>
-            {pending.mcqResult.is_correct ? 'Correct!' : 'Incorrect.'}
+        <div className="dm-question">
+          <div className="dm-qnum">{pad(index + 1)}</div>
+          <p className="dm-prompt">
+            <FormattedText text={question.question_text} />
           </p>
-          {!pending.mcqResult.is_correct && (
-            <p>Correct answer: {question.options?.[pending.mcqResult.correct_index]}</p>
-          )}
-          <p>{pending.mcqResult.explanation}</p>
-          <button onClick={next}>Next</button>
         </div>
-      )}
 
-      {pending?.scenarioResult && (
-        <div className="result">
-          <p className={pending.scenarioResult.is_correct ? 'correct' : 'incorrect'}>
-            Score: {pending.scenarioResult.score.toFixed(0)}/100 —{' '}
-            {pending.scenarioResult.is_correct ? 'Pass' : 'Needs work'}
-          </p>
-          <ul className="rubric">
-            {pending.scenarioResult.rubric_breakdown.map((r, i) => (
-              <li key={i} className={r.covered ? 'covered' : 'missed'}>
-                {r.covered ? '✓' : '✗'} {r.point}
-              </li>
-            ))}
-          </ul>
-          <p>{pending.scenarioResult.feedback}</p>
-          <p>
-            <strong>Model answer:</strong> {pending.scenarioResult.model_answer}
-          </p>
-          <button onClick={next}>Next</button>
-        </div>
-      )}
+        {!pending && question.type === 'mcq' && (
+          <div className="dm-form">
+            <div className="dm-options">
+              {question.options?.map((opt, i) => (
+                <label key={i} className={selectedOption === i ? 'dm-option selected' : 'dm-option'}>
+                  <input
+                    type="radio"
+                    name="option"
+                    checked={selectedOption === i}
+                    onChange={() => setSelectedOption(i)}
+                  />
+                  {opt}
+                </label>
+              ))}
+            </div>
+            <button
+              type="button"
+              className="dm-btn"
+              onClick={submitAnswer}
+              disabled={busy || selectedOption === null}
+            >
+              Submit →
+            </button>
+          </div>
+        )}
 
-      {error && <p className="error">{error}</p>}
+        {!pending && question.type === 'scenario' && (
+          <div className="dm-form">
+            <textarea
+              className="dm-input"
+              value={scenarioAnswer}
+              onChange={(e) => setScenarioAnswer(e.target.value)}
+              placeholder="Type your answer…"
+            />
+            <button
+              type="button"
+              className="dm-btn"
+              onClick={submitAnswer}
+              disabled={busy || !scenarioAnswer.trim()}
+            >
+              {busy ? 'Grading…' : 'Submit →'}
+            </button>
+          </div>
+        )}
+
+        {pending?.mcqResult && (
+          <div className="dm-result">
+            <p className={pending.mcqResult.is_correct ? 'dm-result-status good' : 'dm-result-status bad'}>
+              {pending.mcqResult.is_correct ? 'Correct' : 'Incorrect'}
+            </p>
+            {!pending.mcqResult.is_correct && (
+              <p className="dm-result-text">
+                Correct answer: {question.options?.[pending.mcqResult.correct_index]}
+              </p>
+            )}
+            <p className="dm-result-text">{pending.mcqResult.explanation}</p>
+            <button type="button" className="dm-btn" onClick={next}>
+              Next →
+            </button>
+          </div>
+        )}
+
+        {pending?.scenarioResult && (
+          <div className="dm-result">
+            <p className={pending.scenarioResult.is_correct ? 'dm-result-status good' : 'dm-result-status bad'}>
+              Score: {pending.scenarioResult.score.toFixed(0)}/100 —{' '}
+              {pending.scenarioResult.is_correct ? 'Pass' : 'Needs work'}
+            </p>
+            <div className="dm-ledger">
+              {pending.scenarioResult.rubric_breakdown.map((r, i) => (
+                <div key={i} className="dm-rubric-row">
+                  <span className={r.covered ? 'dm-rubric-mark covered' : 'dm-rubric-mark missed'}>
+                    {r.covered ? '✓' : '✗'}
+                  </span>
+                  <span className="dm-result-text">{r.point}</span>
+                </div>
+              ))}
+            </div>
+            <p className="dm-result-text">{pending.scenarioResult.feedback}</p>
+            <p className="dm-result-text">
+              <strong>Model answer:</strong> {pending.scenarioResult.model_answer}
+            </p>
+            <button type="button" className="dm-btn" onClick={next}>
+              Next →
+            </button>
+          </div>
+        )}
+
+        {error && <p className="dm-error">{error}</p>}
+      </div>
     </div>
   )
 }

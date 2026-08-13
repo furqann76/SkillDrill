@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { api } from '../api'
 import type { Profile } from '../types'
+import { DmHeader } from './DmHeader'
+import { LedgerRow } from './LedgerRow'
 
 export function ProfileSelect({
   profiles,
@@ -29,31 +31,42 @@ export function ProfileSelect({
   }
 
   return (
-    <div className="screen">
-      <h1>Who's practicing?</h1>
-      {profiles.length > 0 && (
-        <ul className="profile-list">
-          {profiles.map((p) => (
-            <li key={p.id}>
-              <button className="secondary" onClick={() => onSelect(p)}>
-                <span className="profile-avatar">{p.name.charAt(0)}</span>
-                {p.name}
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-      <form onSubmit={handleCreate} className="stack">
-        <input
-          placeholder="New profile name"
-          value={newName}
-          onChange={(e) => setNewName(e.target.value)}
-        />
-        <button type="submit" disabled={!newName.trim()}>
-          Create profile
-        </button>
-      </form>
-      {error && <p className="error">{error}</p>}
+    <div className="dm-app">
+      <DmHeader />
+      <div className="dm-body">
+        <h2>Who's practicing?</h2>
+
+        {profiles.length > 0 && (
+          <div className="dm-ledger">
+            {profiles.map((p, i) => (
+              <LedgerRow
+                key={p.id}
+                index={i + 1}
+                main={<span className="dm-row-name">{p.name}</span>}
+                trailing={<span className="dm-row-arrow">→</span>}
+                onClick={() => onSelect(p)}
+              />
+            ))}
+          </div>
+        )}
+
+        <form onSubmit={handleCreate} className="dm-form">
+          <div className="dm-field">
+            <label>New profile</label>
+            <input
+              className="dm-input"
+              placeholder="Profile name"
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+            />
+          </div>
+          <button type="submit" className="dm-btn" disabled={!newName.trim()}>
+            Create profile →
+          </button>
+        </form>
+
+        {error && <p className="dm-error">{error}</p>}
+      </div>
     </div>
   )
 }
