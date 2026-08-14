@@ -12,9 +12,11 @@ function celebrationMessage(pct: number): string {
 export function Summary({
   results,
   onRestart,
+  onGoHome,
 }: {
   results: QuestionResult[]
   onRestart: () => void
+  onGoHome: () => void
 }) {
   const correct = results.filter(
     (r) => r.mcqResult?.is_correct || r.scenarioResult?.is_correct,
@@ -24,7 +26,7 @@ export function Summary({
 
   return (
     <div className="dm-app">
-      <DmHeader right={<div className="dm-idx">Summary</div>} />
+      <DmHeader onLogoClick={onGoHome} right={<div className="dm-idx">Summary</div>} />
       <div className="dm-body">
         <p className="dm-score">
           {pad(correct)}

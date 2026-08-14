@@ -32,7 +32,7 @@
   min-height: 100svh;
   display: flex;
   flex-direction: column;
-  background: var(--dm-bg);
+  background: transparent;
   color: var(--dm-text);
   font-family: var(--dm-font);
   font-weight: 400;
@@ -75,6 +75,35 @@
 
 .dm-word .accent {
   color: var(--accent);
+}
+
+/* Wordmark as a home button -- resets the global `button` rule (pill shape,
+   gradient fill, hover lift, shadow) the same way .dm-nav button/.dm-row do,
+   then just dims slightly on hover/focus as the affordance. */
+.dm-word-btn {
+  display: inline-flex;
+  align-items: baseline;
+  background: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  transition: none;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+}
+
+.dm-word-btn:hover {
+  background: none;
+  transform: none;
+  box-shadow: none;
+  opacity: 0.75;
+}
+
+.dm-word-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .dm-nav {

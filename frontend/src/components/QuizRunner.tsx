@@ -18,10 +18,12 @@ export function QuizRunner({
   profile,
   questions,
   onFinish,
+  onGoHome,
 }: {
   profile: Profile
   questions: QuestionOut[]
   onFinish: (results: QuestionResult[]) => void
+  onGoHome: () => void
 }) {
   const [index, setIndex] = useState(0)
   const [results, setResults] = useState<QuestionResult[]>([])
@@ -69,6 +71,7 @@ export function QuizRunner({
   return (
     <div className="dm-app">
       <DmHeader
+        onLogoClick={onGoHome}
         right={
           <div className="dm-idx">
             Q {pad(index + 1)} / {pad(questions.length)}

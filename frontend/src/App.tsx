@@ -32,6 +32,14 @@ function App() {
     setScreen('profile')
   }
 
+  // Wordmark click, from any of the four themed screens -- goes to the profile
+  // picker without touching `profile` state, so the current profile is kept
+  // (the user can pick the same one again or switch, but they're never logged
+  // out or reset).
+  function goHome() {
+    setScreen('profile')
+  }
+
   return (
     <>
       {screen === 'checking' && <div className="screen" />}
@@ -46,6 +54,7 @@ function App() {
             setProfile(p)
             setScreen('setup')
           }}
+          onGoHome={goHome}
         />
       )}
 
@@ -58,6 +67,7 @@ function App() {
           }}
           onViewDashboard={() => setScreen('dashboard')}
           onManageTopics={() => setScreen('admin')}
+          onGoHome={goHome}
         />
       )}
 
@@ -69,10 +79,13 @@ function App() {
             setResults(r)
             setScreen('summary')
           }}
+          onGoHome={goHome}
         />
       )}
 
-      {screen === 'summary' && <Summary results={results} onRestart={() => setScreen('setup')} />}
+      {screen === 'summary' && (
+        <Summary results={results} onRestart={() => setScreen('setup')} onGoHome={goHome} />
+      )}
 
       {screen === 'dashboard' && profile && (
         <Dashboard profile={profile} onBack={() => setScreen('setup')} />

@@ -8,10 +8,12 @@ export function ProfileSelect({
   profiles,
   onProfilesChange,
   onSelect,
+  onGoHome,
 }: {
   profiles: Profile[]
   onProfilesChange: (profiles: Profile[]) => void
   onSelect: (profile: Profile) => void
+  onGoHome: () => void
 }) {
   const [newName, setNewName] = useState('')
   const [error, setError] = useState('')
@@ -32,7 +34,7 @@ export function ProfileSelect({
 
   return (
     <div className="dm-app">
-      <DmHeader />
+      <DmHeader onLogoClick={onGoHome} />
       <div className="dm-body">
         <h2>Who's practicing?</h2>
 

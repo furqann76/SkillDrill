@@ -8,11 +8,13 @@ export function QuizSetup({
   onStart,
   onViewDashboard,
   onManageTopics,
+  onGoHome,
 }: {
   profile: Profile
   onStart: (questions: QuestionOut[]) => void
   onViewDashboard: () => void
   onManageTopics: () => void
+  onGoHome: () => void
 }) {
   const [topics, setTopics] = useState<Topic[]>([])
   const [topic, setTopic] = useState('')
@@ -52,6 +54,7 @@ export function QuizSetup({
   return (
     <div className="dm-app">
       <DmHeader
+        onLogoClick={onGoHome}
         right={
           <div className="dm-nav">
             <button type="button" onClick={onViewDashboard}>
