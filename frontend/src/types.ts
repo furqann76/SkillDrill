@@ -56,3 +56,16 @@ export interface AnalyticsResponse {
   topics: TopicStats[]
   weak_topics: string[]
 }
+
+export interface PublicTopic {
+  id: number
+  name: string
+  display_name: string
+}
+
+export interface LeaderboardEntry {
+  rank: number
+  name: string
+  accuracy_pct: number
+  total_attempts: number
+}

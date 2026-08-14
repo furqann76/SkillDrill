@@ -3,6 +3,7 @@ from django.urls import path
 from api.views_analytics import AnalyticsView
 from api.views_auth import LoginView, LogoutView, StatusView
 from api.views_profiles import ProfileListCreateView
+from api.views_public import PublicLeaderboardView, PublicTopicsView
 from api.views_quiz import GradeMCQView, GradeScenarioView, QuizStartView
 from api.views_topics import TopicListCreateView, TopicUpdateView
 
@@ -17,4 +18,7 @@ urlpatterns = [
     path("quiz/grade/mcq", GradeMCQView.as_view()),
     path("quiz/grade/scenario", GradeScenarioView.as_view()),
     path("analytics/<int:profile_id>", AnalyticsView.as_view()),
+    # Public (no PIN) -- consumed by the landing page and other pre-auth screens.
+    path("public/topics", PublicTopicsView.as_view()),
+    path("public/leaderboard", PublicLeaderboardView.as_view()),
 ]

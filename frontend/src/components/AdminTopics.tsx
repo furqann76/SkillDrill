@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { api } from '../api'
 import type { Topic } from '../types'
+import { DmHeader } from './DmHeader'
 
-export function AdminTopics({ onBack }: { onBack: () => void }) {
+export function AdminTopics({ onBack, onGoHome }: { onBack: () => void; onGoHome: () => void }) {
   const [topics, setTopics] = useState<Topic[]>([])
   const [name, setName] = useState('')
   const [displayName, setDisplayName] = useState('')
@@ -45,47 +46,57 @@ export function AdminTopics({ onBack }: { onBack: () => void }) {
   }
 
   return (
-    <div className="screen">
-      <h1>Manage topics</h1>
-      <p>Topics generate questions on demand — inactive topics are hidden from quiz setup.</p>
+    <div className="dm-app">
+      <DmHeader
+        onLogoClick={onGoHome}
+        right={
+          <div className="dm-nav">
+            <button type="button" onClick={onBack}>
+              Setup
+            </button>
+          </div>
+        }
+      />
+      <div className="dm-body">
+        <h2>Manage topics</h2>
+        <p className="dm-label">
+          Topics generate questions on demand — inactive topics are hidden from quiz setup.
+        </p>
 
-      {loading && <p>Loading…</p>}
+        {loading && <p>Loading…</p>}
 
-      {!loading && (
-        <ul className="topic-admin-list">
-          {topics.map((t) => (
-            <li key={t.id}>
-              <span className={t.is_active ? '' : 'muted'}>{t.display_name}</span>
-              <button className="secondary" onClick={() => toggle(t)}>
-                {t.is_active ? 'Deactivate' : 'Activate'}
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
+        {!loading && (
+          <ul className="topic-admin-list">
+            {topics.map((t) => (
+              <li key={t.id}>
+                <span className={t.is_active ? '' : 'muted'}>{t.display_name}</span>
+                <button className="secondary" onClick={() => toggle(t)}>
+                  {t.is_active ? 'Deactivate' : 'Activate'}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
 
-      <form onSubmit={handleCreate} className="stack">
-        <label>
-          Topic name (used internally, e.g. matches CLI generation)
-          <input value={name} onChange={(e) => setName(e.target.value)} placeholder="SQL" />
-        </label>
-        <label>
-          Display name (optional, shown in the UI)
-          <input
-            value={displayName}
-            onChange={(e) => setDisplayName(e.target.value)}
-            placeholder="SQL"
-          />
-        </label>
-        <button type="submit" disabled={!name.trim()}>
-          Add topic
-        </button>
-      </form>
-      {error && <p className="error">{error}</p>}
-
-      <button className="secondary" onClick={onBack} style={{ marginTop: 20 }}>
-        Back
-      </button>
+        <form onSubmit={handleCreate} className="stack">
+          <label>
+            Topic name (used internally, e.g. matches CLI generation)
+            <input value={name} onChange={(e) => setName(e.target.value)} placeholder="SQL" />
+          </label>
+          <label>
+            Display name (optional, shown in the UI)
+            <input
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              placeholder="SQL"
+            />
+          </label>
+          <button type="submit" disabled={!name.trim()}>
+            Add topic
+          </button>
+        </form>
+        {error && <p className="dm-error">{error}</p>}
+      </div>
     </div>
   )
 }

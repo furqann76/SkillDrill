@@ -1,47 +1,66 @@
 :root {
-  --bg: #ffffff;
-  --text: #525252;
-  --text-h: #0a0a0a;
-  --text-muted: #8a8a8a;
+  /* Dark Cyan / Obsidian Tech palette */
+  --bg-primary: #0a0e14;
+  --bg-secondary: #121820;
+  --bg-tertiary: #1a222d;
 
-  --border: rgba(10, 10, 10, 0.12);
-  --border-strong: rgba(10, 10, 10, 0.14);
+  --accent-cyan: #00f0ff;
+  --accent-blue: #0088ff;
+  --accent-glow: rgba(0, 240, 255, 0.15);
 
-  --accent-1: #ec4899;
-  --accent-2: #7c3aed;
-  --accent: #7c3aed;
-  --accent-hover: #6d28d9;
-  --accent-contrast: #ffffff;
-  --gradient: linear-gradient(135deg, var(--accent-1) 0%, var(--accent-2) 100%);
+  --btn-primary-bg: #801222;
+  --btn-primary-hover: #a3182d;
 
-  --code-bg: #f5f5f5;
-  --field-bg: #fafafa;
+  --text-primary: #f0f4f8;
+  --text-secondary: #8c9ba5;
+  --text-dim: #4e5d6c;
 
-  --status-good: #0ca30c;
-  --status-critical: #d03b3b;
-  --bar-track: #e5e5e5;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-accent: rgba(0, 240, 255, 0.3);
+  --grid-line: rgba(0, 240, 255, 0.04);
 
-  /* The hero/celebration surfaces (login, summary) are always-dark and
-     gradient-branded, independent of light/dark mode -- a fixed brand
-     moment rather than a themed content screen. Same red/black family as
-     the page canvas (see dark-mode `background` below) so the card reads
-     as part of one design instead of two competing gradients, with a
-     violet glow tying it to the pink-purple buttons/score text. */
-  --hero-bg: radial-gradient(circle at 15% 10%, rgba(185, 28, 28, 0.32), transparent 55%),
-    radial-gradient(circle at 85% 90%, rgba(124, 58, 237, 0.28), transparent 55%),
-    linear-gradient(160deg, #14060a 0%, #2a0a12 50%, #1c0508 100%);
-  --hero-text: #f5f3ff;
-  --hero-text-muted: #d9b9c4;
-  --hero-border: rgba(255, 255, 255, 0.16);
-  --hero-field-bg: rgba(255, 255, 255, 0.07);
+  /* Aliases: existing component CSS is written against these names, so the
+     new palette flows through everywhere without touching every rule. */
+  --bg: var(--bg-primary);
+  --text: var(--text-secondary);
+  --text-h: var(--text-primary);
+  --text-muted: var(--text-dim);
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --border: var(--border-color);
+  --border-strong: var(--border-accent);
+
+  --accent-1: var(--accent-cyan);
+  --accent-2: var(--accent-blue);
+  --accent: var(--accent-cyan);
+  --accent-hover: var(--accent-blue);
+  --accent-contrast: #04141a;
+  --gradient: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-blue) 100%);
+
+  --code-bg: var(--bg-tertiary);
+  --field-bg: var(--bg-secondary);
+
+  --status-good: #23d18b;
+  --status-critical: #ff4d6a;
+  --bar-track: var(--bg-tertiary);
+
+  /* Hero/celebration surfaces (login, summary) -- always-dark brand moment,
+     obsidian base with a cyan glow and a faint crimson undertone tying it to
+     the primary CTA color. */
+  --hero-bg: radial-gradient(circle at 15% 10%, var(--accent-glow), transparent 55%),
+    radial-gradient(circle at 85% 90%, rgba(128, 18, 34, 0.25), transparent 55%),
+    radial-gradient(circle at top center, #132238 0%, var(--bg-primary) 70%);
+  --hero-text: var(--text-primary);
+  --hero-text-muted: var(--text-secondary);
+  --hero-border: var(--border-accent);
+  --hero-field-bg: rgba(255, 255, 255, 0.05);
+
+  --sans: 'Inter', 'Plus Jakarta Sans', system-ui, sans-serif;
+  --heading: 'Space Grotesk', 'Plus Jakarta Sans', system-ui, sans-serif;
   --mono: ui-monospace, 'JetBrains Mono', Consolas, monospace;
 
   font: 18px/1.45 var(--sans);
   letter-spacing: 0.18px;
-  color-scheme: light dark;
+  color-scheme: dark;
   color: var(--text);
   background: var(--bg);
   font-synthesis: none;
@@ -51,35 +70,6 @@
 
   @media (max-width: 1024px) {
     font-size: 16px;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0a0a0a;
-    --text: #a3a3a3;
-    --text-h: #fafafa;
-    --text-muted: #737373;
-
-    --border: rgba(255, 255, 255, 0.14);
-    --border-strong: rgba(255, 255, 255, 0.18);
-
-    --accent-1: #f472b6;
-    --accent-2: #a78bfa;
-    --accent: #a78bfa;
-    --accent-hover: #b9a3fc;
-    --accent-contrast: #16091f;
-
-    --code-bg: #171717;
-    --field-bg: #151213;
-
-    --bar-track: #262626;
-
-    /* Page canvas only -- --bg itself stays a solid near-black so inputs,
-       code blocks, and table surfaces keep clean contrast against it. */
-    background: radial-gradient(circle at 20% 0%, rgba(185, 28, 28, 0.22), transparent 55%),
-      linear-gradient(165deg, #050505 0%, #1a0508 55%, #2b0a0a 100%);
-    background-attachment: fixed;
   }
 }
 
@@ -96,6 +86,13 @@
 
 body {
   margin: 0;
+  min-height: 100svh;
+  background-color: var(--bg-primary);
+  background-image: linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+    radial-gradient(circle at top center, #132238 0%, var(--bg-primary) 70%);
+  background-size: 48px 48px, 48px 48px, 100% 100%;
+  background-attachment: fixed;
 }
 
 h1,

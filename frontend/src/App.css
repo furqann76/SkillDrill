@@ -14,7 +14,8 @@
   border-radius: 20px;
   background: var(--hero-bg);
   color: var(--hero-text);
-  box-shadow: 0 24px 60px rgba(60, 20, 90, 0.35);
+  border: 1px solid var(--border-accent);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5), 0 0 40px var(--accent-glow);
   overflow: hidden;
   text-align: left;
 }
@@ -23,7 +24,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-image: radial-gradient(var(--accent-glow) 1px, transparent 1px);
   background-size: 24px 24px;
   pointer-events: none;
 }
@@ -74,17 +75,19 @@ select,
 textarea {
   font: inherit;
   padding: 11px 14px;
-  border: 1px solid var(--border-strong);
+  border: 1px solid var(--border-color);
   border-radius: 10px;
   background: var(--field-bg);
   color: var(--text-h);
+  transition: border-color 0.25s ease-in-out, box-shadow 0.25s ease-in-out;
 }
 
 input:focus,
 select:focus,
 textarea:focus {
-  outline: 2px solid var(--accent-2);
-  outline-offset: 1px;
+  outline: none;
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
 textarea {
@@ -106,17 +109,17 @@ button {
   font-weight: 700;
   padding: 12px 22px;
   border: none;
-  border-radius: 999px;
-  background: var(--gradient);
-  color: var(--accent-contrast);
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--btn-primary-bg) 0%, var(--btn-primary-hover) 100%);
+  color: var(--text-primary);
   cursor: pointer;
-  box-shadow: 0 6px 18px rgba(124, 58, 237, 0.28);
-  transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+  box-shadow: 0 6px 18px rgba(128, 18, 34, 0.32);
+  transition: transform 0.25s ease-in-out, box-shadow 0.25s ease-in-out, opacity 0.25s ease-in-out;
 }
 
 button:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 10px 24px rgba(124, 58, 237, 0.38);
+  box-shadow: 0 10px 26px rgba(163, 24, 45, 0.42);
 }
 
 button:active:not(:disabled) {
@@ -127,10 +130,10 @@ button:disabled {
   cursor: not-allowed;
 }
 
-/* Primary (gradient) buttons go flat neutral when disabled, rather than a
-   washed-out, muddy version of the gradient. */
+/* Primary buttons go flat neutral when disabled, rather than a washed-out,
+   muddy version of the crimson. */
 button:disabled:not(.secondary) {
-  background: var(--border-strong);
+  background: var(--bg-tertiary);
   color: var(--text-muted);
   box-shadow: none;
 }
@@ -138,14 +141,15 @@ button:disabled:not(.secondary) {
 button.secondary {
   background: var(--field-bg);
   color: var(--text-h);
-  border: 1px solid var(--border-strong);
+  border: 1px solid var(--border-color);
   box-shadow: none;
 }
 
 button.secondary:hover:not(:disabled) {
-  background: var(--border);
+  background: var(--bg-tertiary);
+  border-color: var(--border-accent);
   transform: none;
-  box-shadow: none;
+  box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
 button.secondary:disabled {
@@ -192,7 +196,7 @@ button.secondary:disabled {
   height: 20px;
   border-radius: 999px;
   background: var(--bar-track);
-  border: 1px solid var(--border-strong);
+  border: 1px solid var(--border-color);
   overflow: hidden;
 }
 
@@ -213,7 +217,7 @@ button.secondary:disabled {
   border-collapse: separate;
   border-spacing: 0;
   font-size: 13px;
-  border: 1px solid var(--border-strong);
+  border: 1px solid var(--border-color);
   border-radius: 14px;
   overflow: hidden;
 }

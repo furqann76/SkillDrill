@@ -88,10 +88,12 @@ function App() {
       )}
 
       {screen === 'dashboard' && profile && (
-        <Dashboard profile={profile} onBack={() => setScreen('setup')} />
+        <Dashboard profile={profile} onBack={() => setScreen('setup')} onGoHome={goHome} />
       )}
 
-      {screen === 'admin' && <AdminTopics onBack={() => setScreen('setup')} />}
+      {screen === 'admin' && (
+        <AdminTopics onBack={() => setScreen('setup')} onGoHome={goHome} />
+      )}
     </>
   )
 }

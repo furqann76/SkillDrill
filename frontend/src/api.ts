@@ -2,7 +2,9 @@ import type {
   AnalyticsResponse,
   GradeMCQResponse,
   GradeScenarioResponse,
+  LeaderboardEntry,
   Profile,
+  PublicTopic,
   QuizStartResponse,
   Topic,
 } from './types'
@@ -67,4 +69,9 @@ export const api = {
 
   getAnalytics: (profile_id: number) =>
     request<AnalyticsResponse>(`/analytics/${profile_id}`),
+
+  publicTopics: () => request<PublicTopic[]>('/public/topics'),
+
+  publicLeaderboard: (limit?: number) =>
+    request<LeaderboardEntry[]>(`/public/leaderboard${limit ? `?limit=${limit}` : ''}`),
 }

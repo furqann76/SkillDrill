@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { api } from '../api'
 import type { Profile, TopicStats } from '../types'
+import { DmHeader } from './DmHeader'
 
 function fmtPct(v: number | null): string {
   return v === null ? '—' : `${Math.round(v)}%`
@@ -33,7 +34,15 @@ function BarRow({ stat, isWeak }: { stat: TopicStats; isWeak: boolean }) {
   )
 }
 
-export function Dashboard({ profile, onBack }: { profile: Profile; onBack: () => void }) {
+export function Dashboard({
+  profile,
+  onBack,
+  onGoHome,
+}: {
+  profile: Profile
+  onBack: () => void
+  onGoHome: () => void
+}) {
   const [topics, setTopics] = useState<TopicStats[]>([])
   const [weak, setWeak] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
@@ -51,59 +60,67 @@ export function Dashboard({ profile, onBack }: { profile: Profile; onBack: () =>
   }, [profile.id])
 
   return (
-    <div className="screen">
-      <h1>Progress</h1>
-      <p>{profile.name}'s performance by topic</p>
-
-      {loading && <p>Loading…</p>}
-      {error && <p className="error">{error}</p>}
-
-      {!loading && !error && topics.length === 0 && (
-        <p>No quiz attempts yet — take a quiz to see your progress here.</p>
-      )}
-
-      {weak.length > 0 && (
-        <div className="weak-banner">
-          <strong>⚠ Weak topics:</strong> {weak.join(', ')} — worth another round.
-        </div>
-      )}
-
-      {topics.length > 0 && (
-        <>
-          <div className="stack" style={{ marginTop: 20 }}>
-            {topics.map((t) => (
-              <BarRow key={t.topic} stat={t} isWeak={weak.includes(t.display_name)} />
-            ))}
+    <div className="dm-app">
+      <DmHeader
+        onLogoClick={onGoHome}
+        right={
+          <div className="dm-nav">
+            <button type="button" onClick={onBack}>
+              Setup
+            </button>
           </div>
+        }
+      />
+      <div className="dm-body">
+        <h2>Progress</h2>
+        <p className="dm-label">{profile.name}'s performance by topic</p>
 
-          <table className="stats-table">
-            <thead>
-              <tr>
-                <th>Topic</th>
-                <th>Attempts</th>
-                <th>Accuracy</th>
-                <th>MCQ</th>
-                <th>Scenario</th>
-              </tr>
-            </thead>
-            <tbody>
+        {loading && <p>Loading…</p>}
+        {error && <p className="dm-error">{error}</p>}
+
+        {!loading && !error && topics.length === 0 && (
+          <p>No quiz attempts yet — take a quiz to see your progress here.</p>
+        )}
+
+        {weak.length > 0 && (
+          <div className="weak-banner">
+            <strong>⚠ Weak topics:</strong> {weak.join(', ')} — worth another round.
+          </div>
+        )}
+
+        {topics.length > 0 && (
+          <>
+            <div className="stack" style={{ marginTop: 4 }}>
               {topics.map((t) => (
-                <tr key={t.topic}>
-                  <td>{t.display_name}</td>
-                  <td>{t.total_attempts}</td>
-                  <td>{fmtPct(t.accuracy_pct)}</td>
-                  <td>{fmtPct(t.mcq_accuracy_pct)}</td>
-                  <td>{fmtPct(t.scenario_accuracy_pct)}</td>
-                </tr>
+                <BarRow key={t.topic} stat={t} isWeak={weak.includes(t.display_name)} />
               ))}
-            </tbody>
-          </table>
-        </>
-      )}
+            </div>
 
-      <button className="secondary" onClick={onBack} style={{ marginTop: 20 }}>
-        Back
-      </button>
+            <table className="stats-table">
+              <thead>
+                <tr>
+                  <th>Topic</th>
+                  <th>Attempts</th>
+                  <th>Accuracy</th>
+                  <th>MCQ</th>
+                  <th>Scenario</th>
+                </tr>
+              </thead>
+              <tbody>
+                {topics.map((t) => (
+                  <tr key={t.topic}>
+                    <td>{t.display_name}</td>
+                    <td>{t.total_attempts}</td>
+                    <td>{fmtPct(t.accuracy_pct)}</td>
+                    <td>{fmtPct(t.mcq_accuracy_pct)}</td>
+                    <td>{fmtPct(t.scenario_accuracy_pct)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
+        )}
+      </div>
     </div>
   )
 }
