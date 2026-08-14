@@ -1,17 +1,24 @@
 from rest_framework import serializers
 
 
+class SignupRequestSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=64)
+    email = serializers.EmailField()
+    password = serializers.CharField()
+    confirm_password = serializers.CharField()
+    preferred_topic = serializers.CharField(required=False, allow_blank=True, default="")
+
+
 class LoginRequestSerializer(serializers.Serializer):
-    pin = serializers.CharField()
+    identifier = serializers.CharField()
+    password = serializers.CharField()
+    remember = serializers.BooleanField(required=False, default=False)
 
 
 class ProfileSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     name = serializers.CharField()
-
-
-class ProfileCreateSerializer(serializers.Serializer):
-    name = serializers.CharField()
+    preferred_topic = serializers.CharField(allow_blank=True)
 
 
 class TopicSerializer(serializers.Serializer):
@@ -31,7 +38,6 @@ class TopicUpdateSerializer(serializers.Serializer):
 
 
 class QuizStartRequestSerializer(serializers.Serializer):
-    profile_id = serializers.IntegerField()
     topic = serializers.CharField()
     difficulty = serializers.CharField()
     count = serializers.IntegerField(default=10)
@@ -52,7 +58,6 @@ class QuizStartResponseSerializer(serializers.Serializer):
 
 
 class GradeMCQRequestSerializer(serializers.Serializer):
-    profile_id = serializers.IntegerField()
     question_id = serializers.IntegerField()
     selected_index = serializers.IntegerField()
 
@@ -64,7 +69,6 @@ class GradeMCQResponseSerializer(serializers.Serializer):
 
 
 class GradeScenarioRequestSerializer(serializers.Serializer):
-    profile_id = serializers.IntegerField()
     question_id = serializers.IntegerField()
     answer_text = serializers.CharField()
 

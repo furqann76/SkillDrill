@@ -1,20 +1,22 @@
 import { useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import './App.css'
 import { api } from './api'
 import { AdminTopics } from './components/AdminTopics'
+import { AuthPage } from './components/AuthPage'
 import { Dashboard } from './components/Dashboard'
-import { Login } from './components/Login'
-import { ProfileSelect } from './components/ProfileSelect'
 import { QuizRunner, type QuestionResult } from './components/QuizRunner'
 import { QuizSetup } from './components/QuizSetup'
 import { Summary } from './components/Summary'
 import type { Profile, QuestionOut } from './types'
 
-type Screen = 'checking' | 'login' | 'profile' | 'setup' | 'quiz' | 'summary' | 'dashboard' | 'admin'
+type Screen = 'checking' | 'auth' | 'setup' | 'quiz' | 'summary' | 'dashboard' | 'admin'
 
 function App() {
+  const [searchParams] = useSearchParams()
+  const initialTopic = searchParams.get('topic') || undefined
+
   const [screen, setScreen] = useState<Screen>('checking')
-  const [profiles, setProfiles] = useState<Profile[]>([])
   const [profile, setProfile] = useState<Profile | null>(null)
   const [questions, setQuestions] = useState<QuestionOut[]>([])
   const [results, setResults] = useState<QuestionResult[]>([])
@@ -22,45 +24,47 @@ function App() {
   useEffect(() => {
     api
       .authStatus()
-      .then((s) => (s.authenticated ? enterApp() : setScreen('login')))
-      .catch(() => setScreen('login'))
+      .then((s) => {
+        if (s.authenticated && s.profile) {
+          setProfile(s.profile)
+          setScreen('setup')
+        } else {
+          setScreen('auth')
+        }
+      })
+      .catch(() => setScreen('auth'))
   }, [])
 
-  async function enterApp() {
-    const p = await api.listProfiles()
-    setProfiles(p)
-    setScreen('profile')
+  function handleAuthenticated(p: Profile) {
+    setProfile(p)
+    setScreen('setup')
   }
 
-  // Wordmark click, from any of the four themed screens -- goes to the profile
-  // picker without touching `profile` state, so the current profile is kept
-  // (the user can pick the same one again or switch, but they're never logged
-  // out or reset).
+  async function handleLogout() {
+    await api.logout().catch(() => {})
+    setProfile(null)
+    setScreen('auth')
+  }
+
+  // Wordmark click, from any of the four themed screens -- returns to quiz
+  // setup, the authenticated app's home base. There's no separate profile
+  // picker to go "home" to anymore: one account, one profile.
   function goHome() {
-    setScreen('profile')
+    setScreen('setup')
   }
 
   return (
     <>
       {screen === 'checking' && <div className="screen" />}
 
-      {screen === 'login' && <Login onSuccess={enterApp} />}
-
-      {screen === 'profile' && (
-        <ProfileSelect
-          profiles={profiles}
-          onProfilesChange={setProfiles}
-          onSelect={(p) => {
-            setProfile(p)
-            setScreen('setup')
-          }}
-          onGoHome={goHome}
-        />
+      {screen === 'auth' && (
+        <AuthPage initialTopic={initialTopic} onSuccess={handleAuthenticated} />
       )}
 
       {screen === 'setup' && profile && (
         <QuizSetup
           profile={profile}
+          initialTopic={initialTopic}
           onStart={(qs) => {
             setQuestions(qs)
             setScreen('quiz')
@@ -68,12 +72,12 @@ function App() {
           onViewDashboard={() => setScreen('dashboard')}
           onManageTopics={() => setScreen('admin')}
           onGoHome={goHome}
+          onLogout={handleLogout}
         />
       )}
 
-      {screen === 'quiz' && profile && (
+      {screen === 'quiz' && (
         <QuizRunner
-          profile={profile}
           questions={questions}
           onFinish={(r) => {
             setResults(r)
@@ -88,11 +92,16 @@ function App() {
       )}
 
       {screen === 'dashboard' && profile && (
-        <Dashboard profile={profile} onBack={() => setScreen('setup')} onGoHome={goHome} />
+        <Dashboard
+          profile={profile}
+          onBack={() => setScreen('setup')}
+          onGoHome={goHome}
+          onLogout={handleLogout}
+        />
       )}
 
       {screen === 'admin' && (
-        <AdminTopics onBack={() => setScreen('setup')} onGoHome={goHome} />
+        <AdminTopics onBack={() => setScreen('setup')} onGoHome={goHome} onLogout={handleLogout} />
       )}
     </>
   )

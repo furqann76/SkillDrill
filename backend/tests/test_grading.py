@@ -2,14 +2,14 @@ import pytest
 from django.conf import settings
 
 from quizbank.grading import grade_and_save_mcq, grade_and_save_scenario
-from quizbank.models import Attempt, Profile, Question, Topic
+from quizbank.models import Attempt, Question, Topic
 
 pytestmark = pytest.mark.django_db
 
 
 @pytest.fixture
-def profile():
-    return Profile.objects.create(name="tester")
+def profile(make_profile):
+    return make_profile("tester")
 
 
 @pytest.fixture

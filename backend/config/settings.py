@@ -71,6 +71,27 @@ DATABASES = {
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# --- Auth ------------------------------------------------------------------
+# Django's own default (AUTH_PASSWORD_VALIDATORS = [] in global_settings.py)
+# validates nothing -- the usual 4 validators only exist because the
+# `startproject` template adds them, and this settings.py was hand-written.
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {"min_length": 8},
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+    },
+]
+
 # --- i18n ------------------------------------------------------------------
 
 LANGUAGE_CODE = "en-us"
@@ -107,7 +128,6 @@ GENERATION_LOW_WATERMARK = int(env("GENERATION_LOW_WATERMARK", "15"))
 GENERATION_MAX_RETRIES = int(env("GENERATION_MAX_RETRIES", "3"))
 DEDUP_SIMILARITY_THRESHOLD = float(env("DEDUP_SIMILARITY_THRESHOLD", "0.9"))
 
-APP_PIN = env("APP_PIN", "changeme")
 SCENARIO_PASS_THRESHOLD = float(env("SCENARIO_PASS_THRESHOLD", "70"))
 WEAK_TOPIC_THRESHOLD = float(env("WEAK_TOPIC_THRESHOLD", "70"))
 

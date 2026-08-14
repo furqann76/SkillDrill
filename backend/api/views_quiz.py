@@ -1,8 +1,9 @@
+from django.contrib.auth import get_user
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.permissions import IsPinAuthenticated
+from api.permissions import IsAccountAuthenticated
 from api.serializers import (
     GradeMCQRequestSerializer,
     GradeScenarioRequestSerializer,
@@ -17,7 +18,7 @@ _client = OllamaClient()
 
 
 class QuizStartView(APIView):
-    permission_classes = [IsPinAuthenticated]
+    permission_classes = [IsAccountAuthenticated]
 
     def post(self, request: Request) -> Response:
         body = QuizStartRequestSerializer(data=request.data)
@@ -29,9 +30,8 @@ class QuizStartView(APIView):
         except Topic.DoesNotExist:
             return Response({"detail": f"Unknown topic: {data['topic']}"}, status=404)
 
-        questions = select_quiz_questions(
-            data["profile_id"], topic.id, data["difficulty"], data["count"]
-        )
+        profile = get_user(request).profile
+        questions = select_quiz_questions(profile.id, topic.id, data["difficulty"], data["count"])
         out = [
             {
                 "id": q.id,
@@ -46,7 +46,7 @@ class QuizStartView(APIView):
 
 
 class GradeMCQView(APIView):
-    permission_classes = [IsPinAuthenticated]
+    permission_classes = [IsAccountAuthenticated]
 
     def post(self, request: Request) -> Response:
         body = GradeMCQRequestSerializer(data=request.data)
@@ -58,7 +58,8 @@ class GradeMCQView(APIView):
         except Question.DoesNotExist:
             return Response({"detail": "MCQ question not found"}, status=404)
 
-        grade_and_save_mcq(data["profile_id"], question, data["selected_index"])
+        profile = get_user(request).profile
+        grade_and_save_mcq(profile.id, question, data["selected_index"])
         return Response(
             {
                 "is_correct": data["selected_index"] == question.correct_index,
@@ -69,7 +70,7 @@ class GradeMCQView(APIView):
 
 
 class GradeScenarioView(APIView):
-    permission_classes = [IsPinAuthenticated]
+    permission_classes = [IsAccountAuthenticated]
 
     def post(self, request: Request) -> Response:
         body = GradeScenarioRequestSerializer(data=request.data)
@@ -81,9 +82,8 @@ class GradeScenarioView(APIView):
         except Question.DoesNotExist:
             return Response({"detail": "Scenario question not found"}, status=404)
 
-        outcome = grade_and_save_scenario(
-            _client, data["profile_id"], question, data["answer_text"]
-        )
+        profile = get_user(request).profile
+        outcome = grade_and_save_scenario(_client, profile.id, question, data["answer_text"])
         if outcome is None:
             return Response(
                 {"detail": "Grading failed after retries; please try again"}, status=502

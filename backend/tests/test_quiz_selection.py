@@ -1,14 +1,14 @@
 import pytest
 
-from quizbank.models import Profile, Question, QuestionSeen, Topic
+from quizbank.models import Question, QuestionSeen, Topic
 from quizbank.quiz_selection import select_quiz_questions
 
 pytestmark = pytest.mark.django_db
 
 
 @pytest.fixture
-def profile():
-    return Profile.objects.create(name="tester")
+def profile(make_profile):
+    return make_profile("tester")
 
 
 @pytest.fixture

@@ -3,7 +3,15 @@ import { api } from '../api'
 import type { Topic } from '../types'
 import { DmHeader } from './DmHeader'
 
-export function AdminTopics({ onBack, onGoHome }: { onBack: () => void; onGoHome: () => void }) {
+export function AdminTopics({
+  onBack,
+  onGoHome,
+  onLogout,
+}: {
+  onBack: () => void
+  onGoHome: () => void
+  onLogout: () => void
+}) {
   const [topics, setTopics] = useState<Topic[]>([])
   const [name, setName] = useState('')
   const [displayName, setDisplayName] = useState('')
@@ -53,6 +61,9 @@ export function AdminTopics({ onBack, onGoHome }: { onBack: () => void; onGoHome
           <div className="dm-nav">
             <button type="button" onClick={onBack}>
               Setup
+            </button>
+            <button type="button" onClick={onLogout}>
+              Log out
             </button>
           </div>
         }

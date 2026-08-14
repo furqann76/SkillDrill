@@ -1,9 +1,10 @@
 import type {
   AnalyticsResponse,
+  AuthResponse,
+  AuthStatusResponse,
   GradeMCQResponse,
   GradeScenarioResponse,
   LeaderboardEntry,
-  Profile,
   PublicTopic,
   QuizStartResponse,
   Topic,
@@ -27,15 +28,27 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 }
 
 export const api = {
-  login: (pin: string) =>
-    request<{ ok: boolean }>('/auth/login', { method: 'POST', body: JSON.stringify({ pin }) }),
+  signup: (
+    username: string,
+    email: string,
+    password: string,
+    confirm_password: string,
+    preferred_topic?: string,
+  ) =>
+    request<AuthResponse>('/auth/signup', {
+      method: 'POST',
+      body: JSON.stringify({ username, email, password, confirm_password, preferred_topic }),
+    }),
 
-  authStatus: () => request<{ authenticated: boolean }>('/auth/status'),
+  login: (identifier: string, password: string, remember: boolean) =>
+    request<AuthResponse>('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ identifier, password, remember }),
+    }),
 
-  listProfiles: () => request<Profile[]>('/profiles'),
+  logout: () => request<{ ok: boolean }>('/auth/logout', { method: 'POST' }),
 
-  createProfile: (name: string) =>
-    request<Profile>('/profiles', { method: 'POST', body: JSON.stringify({ name }) }),
+  authStatus: () => request<AuthStatusResponse>('/auth/status'),
 
   listTopics: (includeInactive = false) =>
     request<Topic[]>(`/topics${includeInactive ? '?include_inactive=true' : ''}`),
@@ -49,26 +62,25 @@ export const api = {
       body: JSON.stringify({ is_active }),
     }),
 
-  startQuiz: (profile_id: number, topic: string, difficulty: string, count: number) =>
+  startQuiz: (topic: string, difficulty: string, count: number) =>
     request<QuizStartResponse>('/quiz/start', {
       method: 'POST',
-      body: JSON.stringify({ profile_id, topic, difficulty, count }),
+      body: JSON.stringify({ topic, difficulty, count }),
     }),
 
-  gradeMcq: (profile_id: number, question_id: number, selected_index: number) =>
+  gradeMcq: (question_id: number, selected_index: number) =>
     request<GradeMCQResponse>('/quiz/grade/mcq', {
       method: 'POST',
-      body: JSON.stringify({ profile_id, question_id, selected_index }),
+      body: JSON.stringify({ question_id, selected_index }),
     }),
 
-  gradeScenario: (profile_id: number, question_id: number, answer_text: string) =>
+  gradeScenario: (question_id: number, answer_text: string) =>
     request<GradeScenarioResponse>('/quiz/grade/scenario', {
       method: 'POST',
-      body: JSON.stringify({ profile_id, question_id, answer_text }),
+      body: JSON.stringify({ question_id, answer_text }),
     }),
 
-  getAnalytics: (profile_id: number) =>
-    request<AnalyticsResponse>(`/analytics/${profile_id}`),
+  getAnalytics: () => request<AnalyticsResponse>('/analytics'),
 
   publicTopics: () => request<PublicTopic[]>('/public/topics'),
 

@@ -29,8 +29,8 @@ class TopicAdmin(admin.ModelAdmin):
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ("name", "attempt_count", "created_at")
-    search_fields = ("name",)
+    list_display = ("name", "user", "attempt_count", "created_at")
+    search_fields = ("name", "user__email", "user__username")
 
     @admin.display(description="Attempts")
     def attempt_count(self, obj: Profile) -> int:

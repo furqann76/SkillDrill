@@ -1,14 +1,14 @@
 import pytest
 
 from quizbank.analytics import compute_topic_stats, weak_topics
-from quizbank.models import Attempt, Profile, Question, Topic
+from quizbank.models import Attempt, Question, Topic
 
 pytestmark = pytest.mark.django_db
 
 
 @pytest.fixture
-def profile():
-    return Profile.objects.create(name="tester")
+def profile(make_profile):
+    return make_profile("tester")
 
 
 def make_topic(name):
@@ -72,8 +72,8 @@ def test_mcq_and_scenario_accuracy_tracked_separately(profile):
     assert stats[0].scenario_accuracy_pct == 0.0
 
 
-def test_stats_scoped_to_profile(profile):
-    other_profile = Profile.objects.create(name="other")
+def test_stats_scoped_to_profile(profile, make_profile):
+    other_profile = make_profile("other")
 
     topic = make_topic("python")
     q = make_question(topic)

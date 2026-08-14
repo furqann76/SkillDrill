@@ -5,16 +5,20 @@ import { DmHeader } from './DmHeader'
 
 export function QuizSetup({
   profile,
+  initialTopic,
   onStart,
   onViewDashboard,
   onManageTopics,
   onGoHome,
+  onLogout,
 }: {
   profile: Profile
+  initialTopic?: string
   onStart: (questions: QuestionOut[]) => void
   onViewDashboard: () => void
   onManageTopics: () => void
   onGoHome: () => void
+  onLogout: () => void
 }) {
   const [topics, setTopics] = useState<Topic[]>([])
   const [topic, setTopic] = useState('')
@@ -26,8 +30,13 @@ export function QuizSetup({
   useEffect(() => {
     api.listTopics().then((t) => {
       setTopics(t)
-      if (t.length > 0) setTopic(t[0].name)
+      const preferred = initialTopic || profile.preferred_topic
+      const match = preferred && t.some((x) => x.name === preferred) ? preferred : t[0]?.name
+      if (match) setTopic(match)
     })
+    // Runs once on mount to pick the initial topic; initialTopic/preferred_topic
+    // are read at that moment on purpose, not tracked for later changes.
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   async function handleSubmit(e: React.FormEvent) {
@@ -35,7 +44,7 @@ export function QuizSetup({
     setError('')
     setBusy(true)
     try {
-      const res = await api.startQuiz(profile.id, topic, difficulty, count)
+      const res = await api.startQuiz(topic, difficulty, count)
       if (res.available === 0) {
         setError(
           `No ${difficulty} questions for ${topic} yet. Generate some first with ` +
@@ -62,6 +71,9 @@ export function QuizSetup({
             </button>
             <button type="button" onClick={onManageTopics}>
               Topics
+            </button>
+            <button type="button" onClick={onLogout}>
+              Log out
             </button>
           </div>
         }

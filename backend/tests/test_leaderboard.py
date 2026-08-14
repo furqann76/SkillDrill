@@ -1,7 +1,7 @@
 import pytest
 
 from quizbank.leaderboard import compute_leaderboard
-from quizbank.models import Attempt, Profile, Question, Topic
+from quizbank.models import Attempt, Question, Topic
 
 pytestmark = pytest.mark.django_db
 
@@ -34,18 +34,18 @@ def make_attempts(profile, topic, correct_count, incorrect_count):
         )
 
 
-def test_empty_when_no_profiles_qualify(topic):
-    p = Profile.objects.create(name="rookie")
+def test_empty_when_no_profiles_qualify(topic, make_profile):
+    p = make_profile("rookie")
     make_attempts(p, topic, correct_count=1, incorrect_count=0)  # only 1 attempt
 
     assert compute_leaderboard(min_attempts=5) == []
 
 
-def test_ranks_by_accuracy_descending(topic):
-    strong = Profile.objects.create(name="strong")
+def test_ranks_by_accuracy_descending(topic, make_profile):
+    strong = make_profile("strong")
     make_attempts(strong, topic, correct_count=9, incorrect_count=1)  # 90%
 
-    weak = Profile.objects.create(name="weak")
+    weak = make_profile("weak")
     make_attempts(weak, topic, correct_count=5, incorrect_count=5)  # 50%
 
     board = compute_leaderboard(min_attempts=5)
@@ -57,11 +57,11 @@ def test_ranks_by_accuracy_descending(topic):
     assert board[1].accuracy_pct == 50.0
 
 
-def test_excludes_profiles_below_min_attempts(topic):
-    qualifies = Profile.objects.create(name="qualifies")
+def test_excludes_profiles_below_min_attempts(topic, make_profile):
+    qualifies = make_profile("qualifies")
     make_attempts(qualifies, topic, correct_count=5, incorrect_count=0)
 
-    too_few = Profile.objects.create(name="too_few")
+    too_few = make_profile("too_few")
     make_attempts(too_few, topic, correct_count=3, incorrect_count=0)
 
     board = compute_leaderboard(min_attempts=5)
@@ -69,11 +69,11 @@ def test_excludes_profiles_below_min_attempts(topic):
     assert [e.name for e in board] == ["qualifies"]
 
 
-def test_ties_broken_by_more_attempts_first(topic):
-    fewer = Profile.objects.create(name="fewer")
+def test_ties_broken_by_more_attempts_first(topic, make_profile):
+    fewer = make_profile("fewer")
     make_attempts(fewer, topic, correct_count=5, incorrect_count=5)  # 50%, 10 attempts
 
-    more = Profile.objects.create(name="more")
+    more = make_profile("more")
     make_attempts(more, topic, correct_count=10, incorrect_count=10)  # 50%, 20 attempts
 
     board = compute_leaderboard(min_attempts=5)
@@ -81,9 +81,9 @@ def test_ties_broken_by_more_attempts_first(topic):
     assert [e.name for e in board] == ["more", "fewer"]
 
 
-def test_limit_caps_results(topic):
+def test_limit_caps_results(topic, make_profile):
     for i in range(5):
-        p = Profile.objects.create(name=f"user{i}")
+        p = make_profile(f"user{i}")
         make_attempts(p, topic, correct_count=5, incorrect_count=0)
 
     board = compute_leaderboard(min_attempts=5, limit=3)
@@ -92,7 +92,7 @@ def test_limit_caps_results(topic):
     assert [e.rank for e in board] == [1, 2, 3]
 
 
-def test_profile_with_zero_attempts_excluded_not_crashed(topic):
-    Profile.objects.create(name="never-played")
+def test_profile_with_zero_attempts_excluded_not_crashed(topic, make_profile):
+    make_profile("never-played")
 
     assert compute_leaderboard(min_attempts=1) == []

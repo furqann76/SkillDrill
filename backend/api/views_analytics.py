@@ -1,17 +1,19 @@
 from django.conf import settings
+from django.contrib.auth import get_user
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.permissions import IsPinAuthenticated
+from api.permissions import IsAccountAuthenticated
 from quizbank.analytics import compute_topic_stats, weak_topics
 
 
 class AnalyticsView(APIView):
-    permission_classes = [IsPinAuthenticated]
+    permission_classes = [IsAccountAuthenticated]
 
-    def get(self, request: Request, profile_id: int) -> Response:
-        stats = compute_topic_stats(profile_id)
+    def get(self, request: Request) -> Response:
+        profile = get_user(request).profile
+        stats = compute_topic_stats(profile.id)
         weak = weak_topics(stats, settings.WEAK_TOPIC_THRESHOLD)
 
         return Response(

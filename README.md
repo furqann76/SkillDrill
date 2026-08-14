@@ -31,7 +31,7 @@ See [`SkillDrill-Spec.md`](./SkillDrill-Spec.md) for the full functional spec.
 ```bash
 # Backend
 cd backend
-cp .env.example .env   # adjust APP_PIN, SESSION_SECRET, model names etc.
+cp .env.example .env   # adjust SESSION_SECRET, model names etc.
 python3 -m venv .venv
 .venv/bin/pip install -e ".[dev]"
 .venv/bin/python manage.py migrate
@@ -71,16 +71,17 @@ cd backend  && .venv/bin/python manage.py runserver 8000
 cd frontend && npm run dev
 ```
 
-Open the URL Vite prints (typically `http://localhost:5173`). Log in with `APP_PIN` from your
-`.env`, create a profile, pick a topic/difficulty, and take the quiz. From the quiz setup screen
-you can also open **View progress** (per-topic accuracy, weak-topic highlighting) and
-**Manage topics** (add topics, activate/deactivate — an inactive topic is hidden from quiz setup).
+Open the URL Vite prints (typically `http://localhost:5173`). Sign up with an email, username, and
+password — this creates your account and its one practice profile in the same step — then pick a
+topic/difficulty and take the quiz. From the quiz setup screen you can also open **View progress**
+(per-topic accuracy, weak-topic highlighting) and **Manage topics** (add topics,
+activate/deactivate — an inactive topic is hidden from quiz setup).
 
 **Admin panel**: `http://localhost:8000/admin` — log in with the superuser you created above.
-Full CRUD over topics, questions, profiles, question-seen records, and attempts, with filtering
-and search built in. This is the fastest way to eyeball generated content, fix a bad question, or
-seed/clean up data by hand — separate from the app's own PIN-gated auth, since the admin panel
-uses Django's normal user/password login.
+Full CRUD over topics, questions, accounts/profiles, question-seen records, and attempts, with
+filtering and search built in. This is the fastest way to eyeball generated content, fix a bad
+question, or seed/clean up data by hand. It shares the same `auth.User` table as the app's own
+login, just gated on `is_staff` — a regular signup can never log into `/admin`.
 
 **Background bank top-up**: on startup, the backend schedules a recurring job (every
 `TOP_UP_INTERVAL_MINUTES`, default 30) that checks every active topic × difficulty × question
@@ -121,14 +122,17 @@ backend/
 
 ## Architecture notes / deviations from the spec
 
-- **Multi-profile support**: the spec's data model (section 4) assumes a single user. Since this
-  build supports multiple local profiles, the "has this question been seen" flag described in
-  spec 3.6 is implemented as a `QuestionSeen(profile, question)` join table instead of a single
-  boolean column on `Question`, and `Attempt` carries a `profile`.
-- **Auth**: the app itself uses a single app-level PIN (`APP_PIN` in `.env`) via a Django session
-  flag, not per-profile passwords — profiles separate practice history, not access. The Django
-  admin panel is a separate login (username/password via `createsuperuser`), since that's how
-  Django admin works.
+- **Profile support**: the spec's data model (section 4) assumes a single user. This build keeps
+  `Profile` as its own model (one per account, created automatically at signup) rather than
+  folding its fields into `User`, so the "has this question been seen" flag described in spec 3.6
+  stays a `QuestionSeen(profile, question)` join table instead of a boolean column on `Question`,
+  and `Attempt` carries a `profile`.
+- **Auth**: real accounts (email + username + password, hashed via Django's `auth.User`), one
+  profile per account. Session-based, via `django.contrib.auth`'s `login()`/`logout()` — not
+  wired through DRF's authentication-class layer, so writes stay `csrf_exempt` the same way they
+  always were under APIView, rather than needing `X-CSRFToken` plumbing on the frontend for a
+  same-origin, `SameSite=Lax` local app. `quiz/*` and `analytics` derive the caller's profile from
+  the session instead of trusting a client-supplied `profile_id`.
 - **Topics**: topic list lives in the `Topic` model with an in-app admin UI to manage it (per
   your answer to the spec's open question) as well as full CRUD via the Django admin panel,
   rather than a static config file.

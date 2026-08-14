@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 
@@ -15,7 +16,20 @@ class Topic(models.Model):
 
 
 class Profile(models.Model):
+    """One practice profile per account -- created automatically at signup,
+    named after the account's username. Kept as a separate model (rather than
+    folding its fields into User) because Attempt/QuestionSeen were already
+    built against `profile`, and quiz/grading/analytics logic is naturally
+    scoped to "whoever is practicing" independent of how they authenticated.
+    """
+
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="profile"
+    )
     name = models.CharField(max_length=64, unique=True)
+    # Optional signup-time topic pick (by Topic.name), used to preselect the
+    # quiz setup topic dropdown on first use. Never required.
+    preferred_topic = models.CharField(max_length=64, blank=True, default="")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:

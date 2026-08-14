@@ -8,8 +8,8 @@ import './publicPages.css'
 
 const STEPS = [
   {
-    title: 'Pick a profile',
-    text: 'Practice as yourself, or spin up a fresh profile to track a clean set of stats.',
+    title: 'Create your account',
+    text: 'Sign up with an email and password -- your practice profile is created automatically.',
   },
   {
     title: 'Choose a topic & difficulty',
@@ -93,12 +93,28 @@ export function LandingPage() {
                 { id: -3, name: 'html5', display_name: 'HTML5' },
                 { id: -4, name: 'database', display_name: 'Database' },
               ]
-          ).map((t) => (
-            <div className="public-topic-card" key={t.id}>
-              <h3>{t.display_name}</h3>
-              <p>MCQ &amp; scenario questions, basic through mid-level.</p>
-            </div>
-          ))}
+          ).map((t) => {
+            const goToTopic = () => navigate(`/app?topic=${encodeURIComponent(t.name)}`)
+            return (
+              <div
+                className={t.id > 0 ? 'public-topic-card clickable' : 'public-topic-card'}
+                key={t.id}
+                role={t.id > 0 ? 'button' : undefined}
+                tabIndex={t.id > 0 ? 0 : undefined}
+                onClick={t.id > 0 ? goToTopic : undefined}
+                onKeyDown={
+                  t.id > 0
+                    ? (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') goToTopic()
+                      }
+                    : undefined
+                }
+              >
+                <h3>{t.display_name}</h3>
+                <p>MCQ &amp; scenario questions, basic through mid-level.</p>
+              </div>
+            )
+          })}
         </div>
       </section>
 

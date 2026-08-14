@@ -301,6 +301,10 @@
   transition: border-color 0.25s ease-in-out, transform 0.25s ease-in-out, box-shadow 0.25s ease-in-out;
 }
 
+.public-topic-card.clickable {
+  cursor: pointer;
+}
+
 .public-topic-card:hover {
   border-color: var(--border-accent);
   transform: translateY(-4px);

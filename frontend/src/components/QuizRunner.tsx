@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { api } from '../api'
-import type { GradeMCQResponse, GradeScenarioResponse, Profile, QuestionOut } from '../types'
+import type { GradeMCQResponse, GradeScenarioResponse, QuestionOut } from '../types'
 import { DmHeader } from './DmHeader'
 import { FormattedText } from './FormattedText'
 
@@ -15,12 +15,10 @@ function pad(n: number): string {
 }
 
 export function QuizRunner({
-  profile,
   questions,
   onFinish,
   onGoHome,
 }: {
-  profile: Profile
   questions: QuestionOut[]
   onFinish: (results: QuestionResult[]) => void
   onGoHome: () => void
@@ -41,11 +39,11 @@ export function QuizRunner({
     try {
       if (question.type === 'mcq') {
         if (selectedOption === null) return
-        const result = await api.gradeMcq(profile.id, question.id, selectedOption)
+        const result = await api.gradeMcq(question.id, selectedOption)
         setPending({ question, mcqResult: result })
       } else {
         if (!scenarioAnswer.trim()) return
-        const result = await api.gradeScenario(profile.id, question.id, scenarioAnswer)
+        const result = await api.gradeScenario(question.id, scenarioAnswer)
         setPending({ question, scenarioResult: result })
       }
     } catch (err) {

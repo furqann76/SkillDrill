@@ -2,13 +2,13 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.permissions import IsPinAuthenticated
+from api.permissions import IsAccountAuthenticated
 from api.serializers import TopicCreateSerializer, TopicSerializer, TopicUpdateSerializer
 from quizbank.models import Topic
 
 
 class TopicListCreateView(APIView):
-    permission_classes = [IsPinAuthenticated]
+    permission_classes = [IsAccountAuthenticated]
 
     def get(self, request: Request) -> Response:
         include_inactive = request.query_params.get("include_inactive") == "true"
@@ -31,7 +31,7 @@ class TopicListCreateView(APIView):
 
 
 class TopicUpdateView(APIView):
-    permission_classes = [IsPinAuthenticated]
+    permission_classes = [IsAccountAuthenticated]
 
     def patch(self, request: Request, topic_id: int) -> Response:
         try:

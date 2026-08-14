@@ -1,6 +1,16 @@
 export interface Profile {
   id: number
   name: string
+  preferred_topic: string
+}
+
+export interface AuthResponse {
+  profile: Profile | null
+}
+
+export interface AuthStatusResponse {
+  authenticated: boolean
+  profile: Profile | null
 }
 
 export interface Topic {

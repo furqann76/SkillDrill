@@ -38,10 +38,12 @@ export function Dashboard({
   profile,
   onBack,
   onGoHome,
+  onLogout,
 }: {
   profile: Profile
   onBack: () => void
   onGoHome: () => void
+  onLogout: () => void
 }) {
   const [topics, setTopics] = useState<TopicStats[]>([])
   const [weak, setWeak] = useState<string[]>([])
@@ -50,14 +52,14 @@ export function Dashboard({
 
   useEffect(() => {
     api
-      .getAnalytics(profile.id)
+      .getAnalytics()
       .then((res) => {
         setTopics(res.topics)
         setWeak(res.weak_topics)
       })
       .catch((err) => setError((err as Error).message))
       .finally(() => setLoading(false))
-  }, [profile.id])
+  }, [])
 
   return (
     <div className="dm-app">
@@ -67,6 +69,9 @@ export function Dashboard({
           <div className="dm-nav">
             <button type="button" onClick={onBack}>
               Setup
+            </button>
+            <button type="button" onClick={onLogout}>
+              Log out
             </button>
           </div>
         }
