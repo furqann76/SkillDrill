@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import './App.css'
 import { api } from './api'
-import { AdminTopics } from './components/AdminTopics'
 import { AuthPage } from './components/AuthPage'
 import { Dashboard } from './components/Dashboard'
 import { QuizRunner, type QuestionResult } from './components/QuizRunner'
@@ -10,9 +9,10 @@ import { QuizSetup } from './components/QuizSetup'
 import { Summary } from './components/Summary'
 import type { Profile, QuestionOut } from './types'
 
-type Screen = 'checking' | 'auth' | 'setup' | 'quiz' | 'summary' | 'dashboard' | 'admin'
+type Screen = 'checking' | 'auth' | 'setup' | 'quiz' | 'summary' | 'dashboard'
 
 function App() {
+  const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const initialTopic = searchParams.get('topic') || undefined
 
@@ -46,11 +46,12 @@ function App() {
     setScreen('auth')
   }
 
-  // Wordmark click, from any of the four themed screens -- returns to quiz
-  // setup, the authenticated app's home base. There's no separate profile
-  // picker to go "home" to anymore: one account, one profile.
+  // Wordmark click, from any of the themed screens -- goes to the public
+  // landing page, not back into the authenticated app. The session is left
+  // alone (no logout): if they navigate back into /app they land straight
+  // in quiz setup again.
   function goHome() {
-    setScreen('setup')
+    navigate('/')
   }
 
   return (
@@ -70,7 +71,6 @@ function App() {
             setScreen('quiz')
           }}
           onViewDashboard={() => setScreen('dashboard')}
-          onManageTopics={() => setScreen('admin')}
           onGoHome={goHome}
           onLogout={handleLogout}
         />
@@ -98,10 +98,6 @@ function App() {
           onGoHome={goHome}
           onLogout={handleLogout}
         />
-      )}
-
-      {screen === 'admin' && (
-        <AdminTopics onBack={() => setScreen('setup')} onGoHome={goHome} onLogout={handleLogout} />
       )}
     </>
   )

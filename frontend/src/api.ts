@@ -50,17 +50,7 @@ export const api = {
 
   authStatus: () => request<AuthStatusResponse>('/auth/status'),
 
-  listTopics: (includeInactive = false) =>
-    request<Topic[]>(`/topics${includeInactive ? '?include_inactive=true' : ''}`),
-
-  createTopic: (name: string, display_name?: string) =>
-    request<Topic>('/topics', { method: 'POST', body: JSON.stringify({ name, display_name }) }),
-
-  setTopicActive: (topicId: number, is_active: boolean) =>
-    request<Topic>(`/topics/${topicId}`, {
-      method: 'PATCH',
-      body: JSON.stringify({ is_active }),
-    }),
+  listTopics: () => request<Topic[]>('/topics'),
 
   startQuiz: (topic: string, difficulty: string, count: number) =>
     request<QuizStartResponse>('/quiz/start', {

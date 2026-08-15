@@ -8,7 +8,6 @@ export function QuizSetup({
   initialTopic,
   onStart,
   onViewDashboard,
-  onManageTopics,
   onGoHome,
   onLogout,
 }: {
@@ -16,7 +15,6 @@ export function QuizSetup({
   initialTopic?: string
   onStart: (questions: QuestionOut[]) => void
   onViewDashboard: () => void
-  onManageTopics: () => void
   onGoHome: () => void
   onLogout: () => void
 }) {
@@ -68,9 +66,6 @@ export function QuizSetup({
           <div className="dm-nav">
             <button type="button" onClick={onViewDashboard}>
               Progress
-            </button>
-            <button type="button" onClick={onManageTopics}>
-              Topics
             </button>
             <button type="button" onClick={onLogout}>
               Log out

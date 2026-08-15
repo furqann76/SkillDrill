@@ -12,3 +12,15 @@ class IsAccountAuthenticated(BasePermission):
 
     def has_permission(self, request, view) -> bool:
         return get_user(request).is_authenticated
+
+
+class IsStaffAuthenticated(BasePermission):
+    """Same session resolution as IsAccountAuthenticated, but for endpoints
+    that manage shared data (e.g. the topic list) rather than a caller's own
+    practice data -- regular accounts can take quizzes and see their own
+    stats, not add/deactivate topics for everyone. Use the Django admin panel
+    for that.
+    """
+
+    def has_permission(self, request, view) -> bool:
+        return get_user(request).is_staff
