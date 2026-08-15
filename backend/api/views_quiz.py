@@ -11,7 +11,7 @@ from api.serializers import (
 )
 from llm.client import OllamaClient
 from quizbank.grading import grade_and_save_mcq, grade_and_save_scenario
-from quizbank.models import Question, Topic
+from quizbank.models import Question, Topic, get_or_create_profile
 from quizbank.quiz_selection import select_quiz_questions
 
 _client = OllamaClient()
@@ -30,7 +30,7 @@ class QuizStartView(APIView):
         except Topic.DoesNotExist:
             return Response({"detail": f"Unknown topic: {data['topic']}"}, status=404)
 
-        profile = get_user(request).profile
+        profile = get_or_create_profile(get_user(request))
         questions = select_quiz_questions(profile.id, topic.id, data["difficulty"], data["count"])
         out = [
             {
@@ -58,7 +58,7 @@ class GradeMCQView(APIView):
         except Question.DoesNotExist:
             return Response({"detail": "MCQ question not found"}, status=404)
 
-        profile = get_user(request).profile
+        profile = get_or_create_profile(get_user(request))
         grade_and_save_mcq(profile.id, question, data["selected_index"])
         return Response(
             {
@@ -82,7 +82,7 @@ class GradeScenarioView(APIView):
         except Question.DoesNotExist:
             return Response({"detail": "Scenario question not found"}, status=404)
 
-        profile = get_user(request).profile
+        profile = get_or_create_profile(get_user(request))
         outcome = grade_and_save_scenario(_client, profile.id, question, data["answer_text"])
         if outcome is None:
             return Response(

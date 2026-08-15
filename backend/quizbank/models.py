@@ -36,6 +36,18 @@ class Profile(models.Model):
         return self.name
 
 
+def get_or_create_profile(user) -> "Profile":
+    """Resolve a user's profile, creating one on first use if it's missing.
+
+    Every account created through the public signup flow gets a Profile
+    immediately, but accounts created outside that flow -- `createsuperuser`,
+    a future admin-panel-added user -- never go through SignupView, so they'd
+    otherwise 500 the first time they try to take a quiz.
+    """
+    profile, _ = Profile.objects.get_or_create(user=user, defaults={"name": user.username})
+    return profile
+
+
 class Question(models.Model):
     MCQ = "mcq"
     SCENARIO = "scenario"

@@ -7,14 +7,14 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from api.serializers import LoginRequestSerializer, ProfileSerializer, SignupRequestSerializer
-from quizbank.models import Profile
+from quizbank.models import Profile, get_or_create_profile
 
 
-def _profile_data(user: User) -> dict | None:
-    try:
-        return ProfileSerializer(user.profile).data
-    except Profile.DoesNotExist:
-        return None
+def _profile_data(user: User) -> dict:
+    # Accounts made outside the signup flow (createsuperuser, a future
+    # admin-added user) reach this without a Profile yet -- provision one
+    # instead of leaving the frontend stuck on a null profile.
+    return ProfileSerializer(get_or_create_profile(user)).data
 
 
 class SignupView(APIView):

@@ -6,13 +6,14 @@ from rest_framework.views import APIView
 
 from api.permissions import IsAccountAuthenticated
 from quizbank.analytics import compute_topic_stats, weak_topics
+from quizbank.models import get_or_create_profile
 
 
 class AnalyticsView(APIView):
     permission_classes = [IsAccountAuthenticated]
 
     def get(self, request: Request) -> Response:
-        profile = get_user(request).profile
+        profile = get_or_create_profile(get_user(request))
         stats = compute_topic_stats(profile.id)
         weak = weak_topics(stats, settings.WEAK_TOPIC_THRESHOLD)
 
