@@ -1,33 +1,3 @@
-> ## 🚀 Also by me: [AI Job Agent](https://github.com/furqann76/JobAgent)
->
-> An AI agent that finds the right jobs for you, scores each one against your real experience,
-> and drafts a tailored CV and cover letter for the ones worth applying to — running on your own
-> machine with a local AI model. Built around a simple routine: **~10 good applications a day
-> instead of 100 weak ones.** The agent does the searching, reading and first drafts; you make
-> every decision.
->
-> - **Finds jobs** from ~30 company job boards (Greenhouse and Lever public APIs), filtered by
->   the titles you want — or paste any job description yourself.
-> - **Understands your field** — works out your kind of work, level and core stack, and sets
->   aside jobs that only *sound* right, always showing the reason.
-> - **Transparent match scores** (skills, experience, projects, education, location) plus an
->   eligibility check — deterministic code, not AI guesswork.
-> - **Ranked daily shortlist**, capped at your daily goal.
-> - **Tailored CVs and cover letters** grounded only in evidence from your profile (RAG with
->   FAISS) — missing skills are listed as gaps, never invented. Export to PDF or Word.
-> - **CV import** (PDF, Word or text), reviewed by you before anything is saved.
-> - **Application tracking** on a Kanban board, with optional browser form-filling that
->   **never submits without your explicit confirmation**.
-> - **Insights, notifications and multiple accounts**, each fully separate.
->
-> **Stack:** Python 3.12, Django 6, DRF, PostgreSQL, Redis, Celery, Ollama
-> (`qwen2.5:7b-instruct` + `nomic-embed-text`), FAISS, Pydantic, Playwright, React 19 +
-> TypeScript + Vite.
->
-> 👉 **[github.com/furqann76/JobAgent](https://github.com/furqann76/JobAgent)**
-
----
-
 # SkillDrill
 
 Local-first MCQ and scenario-based technical interview practice engine. Runs entirely on your
